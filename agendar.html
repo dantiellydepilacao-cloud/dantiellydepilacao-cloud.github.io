@@ -21,238 +21,111 @@
     --ink:       #232e19;
     --muted:     #7a9060;
   }
-
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Outfit', sans-serif;
-    background: var(--avo-blush);
-    color: var(--ink);
-    min-height: 100vh;
-  }
+  body { font-family: 'Outfit', sans-serif; background: var(--avo-blush); color: var(--ink); min-height: 100vh; }
 
-  /* NAV */
   nav {
     position: fixed; top: 0; width: 100%; z-index: 500;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 1rem 3rem;
-    background: rgba(255,255,255,.95);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--avo-pale);
+    padding: 1rem 3rem; background: rgba(255,255,255,.95);
+    backdrop-filter: blur(16px); border-bottom: 1px solid var(--avo-pale);
   }
-  .brand-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem; color: var(--avo-xdark); text-decoration: none;
-  }
-  .nav-back {
-    display: flex; align-items: center; gap: .5rem;
-    font-size: .8rem; color: var(--muted); text-decoration: none;
-    font-weight: 500; letter-spacing: .06em;
-    transition: color .2s;
-  }
+  .brand-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--avo-xdark); text-decoration: none; }
+  .nav-back { display: flex; align-items: center; gap: .5rem; font-size: .8rem; color: var(--muted); text-decoration: none; font-weight: 500; transition: color .2s; }
   .nav-back:hover { color: var(--avo-xdark); }
 
-  /* LAYOUT */
   .page {
     max-width: 960px; margin: 0 auto;
     padding: 5.5rem 1.5rem 3rem;
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 2rem;
-    align-items: start;
+    display: grid; grid-template-columns: 1fr 380px;
+    gap: 2rem; align-items: start;
   }
 
-  /* LEFT PANEL */
-  .left-panel {}
-  .page-eyebrow {
-    font-size: .7rem; letter-spacing: .18em; text-transform: uppercase;
-    color: var(--honey); font-weight: 600; margin-bottom: .6rem;
-  }
-  .page-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
-    font-weight: 400; line-height: 1.2; color: var(--avo-xdark);
-    margin-bottom: .8rem;
-  }
+  .page-eyebrow { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--honey); font-weight: 600; margin-bottom: .6rem; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 400; line-height: 1.2; color: var(--avo-xdark); margin-bottom: .8rem; }
   .page-title em { font-style: italic; color: var(--honey); }
   .page-desc { font-size: .9rem; color: var(--muted); line-height: 1.7; margin-bottom: 2rem; }
 
-  /* STEPS */
-  .steps-nav {
-    display: flex; gap: 0; margin-bottom: 2rem;
-    border-radius: 1rem; overflow: hidden;
-    border: 1px solid var(--avo-pale);
-  }
-  .step-btn {
-    flex: 1; padding: .7rem .5rem; border: none; background: var(--white);
-    font-size: .75rem; font-weight: 500; color: var(--muted);
-    cursor: default; display: flex; align-items: center; justify-content: center;
-    gap: .4rem; border-right: 1px solid var(--avo-pale); transition: all .25s;
-  }
+  .steps-nav { display: flex; margin-bottom: 2rem; border-radius: 1rem; overflow: hidden; border: 1px solid var(--avo-pale); }
+  .step-btn { flex: 1; padding: .7rem .5rem; border: none; background: var(--white); font-size: .75rem; font-weight: 500; color: var(--muted); cursor: default; display: flex; align-items: center; justify-content: center; gap: .4rem; border-right: 1px solid var(--avo-pale); transition: all .25s; }
   .step-btn:last-child { border-right: none; }
   .step-btn.active { background: var(--avo-xdark); color: var(--white); }
   .step-btn.done { background: var(--avo-cream); color: var(--avo-dark); }
-  .step-num {
-    width: 20px; height: 20px; border-radius: 50%; font-size: .7rem;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,.2); flex-shrink: 0;
-  }
-  .step-btn.active .step-num { background: rgba(255,255,255,.25); }
-  .step-btn.done .step-num { background: var(--avo-pale); color: var(--avo-dark); }
+  .step-num { width: 20px; height: 20px; border-radius: 50%; font-size: .7rem; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.2); flex-shrink: 0; }
 
-  /* CARDS */
-  .card {
-    background: var(--white); border: 1px solid var(--avo-pale);
-    border-radius: 1.4rem; padding: 1.6rem; margin-bottom: 1rem;
-  }
-  .card-title {
-    font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--honey); font-weight: 600; margin-bottom: 1.2rem;
-  }
+  .card { background: var(--white); border: 1px solid var(--avo-pale); border-radius: 1.4rem; padding: 1.6rem; margin-bottom: 1rem; }
+  .card-title { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--honey); font-weight: 600; margin-bottom: 1.2rem; }
 
-  /* SERVICES */
-  .services-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: .8rem;
-  }
-  .svc-btn {
-    border: 1.5px solid var(--avo-pale); border-radius: 1rem;
-    background: var(--white); padding: 1rem; cursor: pointer;
-    text-align: left; transition: all .2s; position: relative;
-  }
+  .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+  .svc-btn { border: 1.5px solid var(--avo-pale); border-radius: 1rem; background: var(--white); padding: 1rem; cursor: pointer; text-align: left; transition: all .2s; position: relative; }
   .svc-btn:hover { border-color: var(--avo-light); background: var(--avo-cream); }
   .svc-btn.selected { border-color: var(--avo-xdark); background: var(--avo-cream); }
-  .svc-btn.selected::after {
-    content: '✓'; position: absolute; top: .6rem; right: .8rem;
-    font-size: .75rem; color: var(--avo-xdark); font-weight: 700;
-  }
+  .svc-btn.selected::after { content: '✓'; position: absolute; top: .6rem; right: .8rem; font-size: .75rem; color: var(--avo-xdark); font-weight: 700; }
   .svc-icon { font-size: 1.4rem; margin-bottom: .5rem; }
   .svc-name { font-size: .88rem; font-weight: 600; color: var(--ink); margin-bottom: .2rem; }
   .svc-dur { font-size: .75rem; color: var(--muted); }
 
-  /* CALENDAR */
-  .cal-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-  .cal-nav-btn {
-    width: 32px; height: 32px; border: 1px solid var(--avo-pale);
-    border-radius: .6rem; background: var(--white);
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-size: 1rem; color: var(--muted); transition: all .2s;
-  }
+  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .cal-nav-btn { width: 32px; height: 32px; border: 1px solid var(--avo-pale); border-radius: .6rem; background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--muted); transition: all .2s; }
   .cal-nav-btn:hover { border-color: var(--avo); color: var(--avo-xdark); }
   .cal-month { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--avo-xdark); }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
   .cal-label { text-align: center; font-size: .68rem; color: var(--muted); padding: 4px 0; font-weight: 500; }
-  .cal-day {
-    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-    font-size: .82rem; border-radius: .5rem; cursor: pointer; transition: all .15s;
-    color: var(--ink);
-  }
+  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: .82rem; border-radius: .5rem; cursor: pointer; transition: all .15s; color: var(--ink); }
   .cal-day:hover:not(.disabled):not(.empty) { background: var(--avo-pale); }
   .cal-day.today { color: var(--honey); font-weight: 600; }
   .cal-day.selected { background: var(--avo-xdark); color: var(--white); }
   .cal-day.disabled { color: var(--avo-pale); cursor: default; }
   .cal-day.empty { cursor: default; }
 
-  /* SLOTS */
   .slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
-  .slot {
-    padding: .6rem; border: 1.5px solid var(--avo-pale);
-    border-radius: .8rem; text-align: center; font-size: .82rem;
-    cursor: pointer; transition: all .2s; color: var(--ink);
-  }
-  .slot:hover:not(.taken) { border-color: var(--avo); background: var(--avo-cream); }
+  .slot { padding: .6rem; border: 1.5px solid var(--avo-pale); border-radius: .8rem; text-align: center; font-size: .82rem; cursor: pointer; transition: all .2s; color: var(--ink); position: relative; }
+  .slot:hover:not(.taken):not(.loading) { border-color: var(--avo); background: var(--avo-cream); }
   .slot.selected { background: var(--avo-xdark); color: var(--white); border-color: var(--avo-xdark); }
-  .slot.taken { background: var(--avo-blush); color: var(--avo-pale); cursor: default; text-decoration: line-through; }
+  .slot.taken { background: var(--avo-blush); color: var(--avo-light); cursor: default; text-decoration: line-through; }
+  .slot.loading { opacity: .5; cursor: default; }
 
-  /* FORM */
   .form-group { margin-bottom: 1rem; }
   .form-label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: .4rem; font-weight: 500; }
   .form-label .opt { font-weight: 400; color: var(--avo-light); }
-  input[type=text], input[type=tel], input[type=email] {
-    width: 100%; padding: .75rem 1rem;
-    border: 1.5px solid var(--avo-pale); border-radius: .8rem;
-    font-family: 'Outfit', sans-serif; font-size: .88rem;
-    color: var(--ink); background: var(--white); outline: none;
-    transition: border-color .2s;
-  }
+  input[type=text], input[type=tel], input[type=email] { width: 100%; padding: .75rem 1rem; border: 1.5px solid var(--avo-pale); border-radius: .8rem; font-family: 'Outfit', sans-serif; font-size: .88rem; color: var(--ink); background: var(--white); outline: none; transition: border-color .2s; }
   input:focus { border-color: var(--avo); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
   .field-err { font-size: .72rem; color: #c0392b; margin-top: .3rem; display: none; }
   .field-err.show { display: block; }
 
-  /* SUMMARY */
-  .summary-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: .7rem 0; border-bottom: 1px solid var(--avo-pale); font-size: .88rem;
-  }
+  .summary-item { display: flex; justify-content: space-between; align-items: center; padding: .7rem 0; border-bottom: 1px solid var(--avo-pale); font-size: .88rem; }
   .summary-item:last-child { border-bottom: none; }
   .summary-item .lbl { color: var(--muted); }
   .summary-item .val { font-weight: 500; color: var(--ink); }
-  .status-tag {
-    font-size: .72rem; padding: .25rem .7rem; border-radius: 1rem;
-    background: var(--avo-pale); color: var(--avo-dark);
-  }
+  .status-tag { font-size: .72rem; padding: .25rem .7rem; border-radius: 1rem; background: var(--avo-pale); color: var(--avo-dark); }
 
-  /* RIGHT PANEL */
   .right-panel { position: sticky; top: 5.5rem; }
-  .info-card {
-    background: var(--avo-xdark); border-radius: 1.4rem; padding: 1.6rem;
-    color: var(--white); margin-bottom: 1rem;
-  }
-  .info-card h3 {
-    font-family: 'Playfair Display', serif; font-size: 1.1rem;
-    margin-bottom: 1rem; color: var(--white);
-  }
-  .info-item {
-    display: flex; align-items: flex-start; gap: .7rem;
-    font-size: .82rem; color: rgba(255,255,255,.7); margin-bottom: .7rem;
-  }
+  .info-card { background: var(--avo-xdark); border-radius: 1.4rem; padding: 1.6rem; color: var(--white); margin-bottom: 1rem; }
+  .info-card h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 1rem; }
+  .info-item { display: flex; align-items: flex-start; gap: .7rem; font-size: .82rem; color: rgba(255,255,255,.7); margin-bottom: .7rem; }
   .info-item:last-child { margin-bottom: 0; }
   .info-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--honey-light); flex-shrink: 0; margin-top: 5px; }
-
-  .booking-card {
-    background: var(--white); border: 1px solid var(--avo-pale);
-    border-radius: 1.4rem; padding: 1.4rem;
-  }
+  .booking-card { background: var(--white); border: 1px solid var(--avo-pale); border-radius: 1.4rem; padding: 1.4rem; }
   .booking-card h4 { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 1rem; }
   .booking-empty { text-align: center; padding: 1.5rem 0; color: var(--avo-light); font-size: .85rem; }
 
-  /* BUTTONS */
-  .btn-primary {
-    width: 100%; padding: .95rem; background: var(--avo-xdark); color: var(--white);
-    border: none; border-radius: 1rem; font-family: 'Outfit', sans-serif;
-    font-size: .9rem; font-weight: 600; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: .5rem;
-    transition: all .25s; margin-top: 1rem;
-  }
+  .btn-primary { width: 100%; padding: .95rem; background: var(--avo-xdark); color: var(--white); border: none; border-radius: 1rem; font-family: 'Outfit', sans-serif; font-size: .9rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: .5rem; transition: all .25s; margin-top: 1rem; }
   .btn-primary:hover { background: var(--avo-dark); transform: translateY(-1px); }
   .btn-primary:disabled { opacity: .4; cursor: default; transform: none; }
   .btn-wa { background: #25d366; }
   .btn-wa:hover { background: #1ebe5d; }
-  .btn-ghost {
-    width: 100%; padding: .85rem; background: transparent; color: var(--muted);
-    border: 1.5px solid var(--avo-pale); border-radius: 1rem;
-    font-family: 'Outfit', sans-serif; font-size: .85rem; cursor: pointer;
-    transition: all .2s; margin-top: .6rem;
-  }
+  .btn-ghost { width: 100%; padding: .85rem; background: transparent; color: var(--muted); border: 1.5px solid var(--avo-pale); border-radius: 1rem; font-family: 'Outfit', sans-serif; font-size: .85rem; cursor: pointer; transition: all .2s; margin-top: .6rem; }
   .btn-ghost:hover { border-color: var(--avo-light); color: var(--avo-dark); }
 
-  /* SUCCESS */
   .success-wrap { text-align: center; padding: 2rem 1rem; }
-  .success-icon {
-    width: 64px; height: 64px; background: var(--avo-cream);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 2rem; margin: 0 auto 1.2rem;
-  }
-  .success-wrap h2 {
-    font-family: 'Playfair Display', serif; font-size: 1.4rem;
-    color: var(--avo-xdark); margin-bottom: .6rem;
-  }
+  .success-icon { width: 64px; height: 64px; background: var(--avo-cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.2rem; }
+  .success-wrap h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--avo-xdark); margin-bottom: .6rem; }
   .success-wrap p { font-size: .88rem; color: var(--muted); line-height: 1.6; }
 
-  /* MOBILE */
+  .loading-slots { text-align: center; padding: 1.5rem; color: var(--muted); font-size: .85rem; }
+
   @media (max-width: 768px) {
     nav { padding: 1rem 1.2rem; }
     .page { grid-template-columns: 1fr; padding: 4.5rem 1rem 2rem; gap: 1.2rem; }
@@ -260,7 +133,6 @@
     .info-card { display: none; }
     .services-grid { grid-template-columns: 1fr 1fr; }
     .form-row { grid-template-columns: 1fr; }
-    .steps-nav { gap: 0; }
     .step-btn { font-size: .68rem; padding: .6rem .3rem; }
   }
 </style>
@@ -279,32 +151,20 @@
     <p class="page-desc">Simples, rápido e sem complicação. Escolha o serviço, a data e o horário ideal para você.</p>
 
     <div class="steps-nav">
-      <div class="step-btn active" id="step-btn-1">
-        <div class="step-num">1</div> Serviço
-      </div>
-      <div class="step-btn" id="step-btn-2">
-        <div class="step-num">2</div> Data & hora
-      </div>
-      <div class="step-btn" id="step-btn-3">
-        <div class="step-num">3</div> Seus dados
-      </div>
-      <div class="step-btn" id="step-btn-4">
-        <div class="step-num">4</div> Confirmar
-      </div>
+      <div class="step-btn active" id="step-btn-1"><div class="step-num">1</div> Serviço</div>
+      <div class="step-btn" id="step-btn-2"><div class="step-num">2</div> Data & hora</div>
+      <div class="step-btn" id="step-btn-3"><div class="step-num">3</div> Seus dados</div>
+      <div class="step-btn" id="step-btn-4"><div class="step-num">4</div> Confirmar</div>
     </div>
 
-    <!-- STEP 1 -->
     <div id="step-1">
       <div class="card">
         <div class="card-title">Qual serviço você deseja?</div>
         <div class="services-grid" id="services-grid"></div>
       </div>
-      <button class="btn-primary" id="btn1" onclick="goStep(2)" disabled>
-        Continuar →
-      </button>
+      <button class="btn-primary" id="btn1" onclick="goStep(2)" disabled>Continuar →</button>
     </div>
 
-    <!-- STEP 2 -->
     <div id="step-2" style="display:none">
       <div class="card">
         <div class="card-title">Escolha a data</div>
@@ -317,13 +177,12 @@
       </div>
       <div class="card" id="slots-card" style="display:none">
         <div class="card-title">Horários disponíveis</div>
-        <div class="slots-grid" id="slots-grid"></div>
+        <div id="slots-container"><div class="loading-slots">Carregando horários...</div></div>
       </div>
       <button class="btn-primary" id="btn2" onclick="goStep(3)" disabled>Continuar →</button>
       <button class="btn-ghost" onclick="goStep(1)">← Voltar</button>
     </div>
 
-    <!-- STEP 3 -->
     <div id="step-3" style="display:none">
       <div class="card">
         <div class="card-title">Seus dados</div>
@@ -348,11 +207,10 @@
           <input type="email" id="f-email" placeholder="seu@email.com" />
         </div>
       </div>
-      <button class="btn-primary" id="btn3" onclick="goStep(4)">Continuar →</button>
+      <button class="btn-primary" id="btn3" onclick="validarEAvancar()">Continuar →</button>
       <button class="btn-ghost" onclick="goStep(2)">← Voltar</button>
     </div>
 
-    <!-- STEP 4 -->
     <div id="step-4" style="display:none">
       <div class="card">
         <div class="card-title">Confirme seu agendamento</div>
@@ -367,16 +225,13 @@
       </p>
     </div>
 
-    <!-- SUCCESS -->
     <div id="step-success" style="display:none">
       <div class="card">
         <div class="success-wrap">
           <div class="success-icon">🌿</div>
           <h2>Agendamento enviado!</h2>
           <p>Sua mensagem foi enviada para a Dantielly.<br>Aguarde a confirmação pelo WhatsApp.</p>
-          <button class="btn-primary" style="margin-top:1.5rem" onclick="resetar()">
-            Fazer novo agendamento
-          </button>
+          <button class="btn-primary" style="margin-top:1.5rem" onclick="resetar()">Fazer novo agendamento</button>
         </div>
       </div>
     </div>
@@ -392,12 +247,36 @@
     </div>
     <div class="booking-card">
       <h4>Seu agendamento</h4>
-      <div id="booking-preview">
-        <div class="booking-empty">Nenhum item selecionado ainda</div>
-      </div>
+      <div id="booking-preview"><div class="booking-empty">Nenhum item selecionado ainda</div></div>
     </div>
   </div>
 </div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDyE_BqLfVi7K3dZV6z08YMuKEaOsnGh_E",
+  authDomain: "dantielly-depilacao.firebaseapp.com",
+  databaseURL: "https://dantielly-depilacao-default-rtdb.firebaseio.com",
+  projectId: "dantielly-depilacao",
+  storageBucket: "dantielly-depilacao.firebasestorage.app",
+  messagingSenderId: "658252770067",
+  appId: "1:658252770067:web:af38d246162e91e3f948e6"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.FIREBASE_DB = db;
+window.FIREBASE_REF = ref;
+window.FIREBASE_SET = set;
+window.FIREBASE_GET = get;
+window.FIREBASE_CHILD = child;
+window.firebaseReady = true;
+</script>
 
 <script>
 const SERVICES = [
@@ -412,16 +291,11 @@ const SERVICES = [
 ];
 
 const HORARIOS = ['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
-const OCUPADOS = {
-  '2026-05-27': ['09:00','10:00','14:00'],
-  '2026-05-28': ['09:30','11:00','15:00'],
-  '2026-05-30': ['09:00','09:30','10:00','13:00'],
-};
 const WA = '5561991763429';
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const DIAS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
-let state = { svc:null, date:null, slot:null, nome:'', wa:'', tel:'', email:'', calY:2026, calM:4 };
+let state = { svc:null, date:null, slot:null, nome:'', wa:'', calY:2026, calM:4 };
 
 function renderServices() {
   document.getElementById('services-grid').innerHTML = SERVICES.map(s =>
@@ -456,9 +330,11 @@ function goStep(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+const MESES_NOMES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
 function renderCal() {
   const { calY:y, calM:m } = state;
-  document.getElementById('cal-label').textContent = MESES[m] + ' ' + y;
+  document.getElementById('cal-label').textContent = MESES_NOMES[m] + ' ' + y;
   const today = new Date(); today.setHours(0,0,0,0);
   const first = new Date(y, m, 1).getDay();
   const total = new Date(y, m+1, 0).getDate();
@@ -481,28 +357,52 @@ function renderCal() {
   document.getElementById('cal-grid').innerHTML = html;
 }
 
-function selDate(key) {
+async function selDate(key) {
   state.date = key; state.slot = null;
   document.getElementById('btn2').disabled = true;
   renderCal();
-  renderSlots(key);
   document.getElementById('slots-card').style.display = 'block';
+  document.getElementById('slots-container').innerHTML = '<div class="loading-slots">⏳ Verificando horários disponíveis...</div>';
+
+  // Buscar horários ocupados no Firebase
+  try {
+    const db = window.FIREBASE_DB;
+    const dbRef = window.FIREBASE_REF;
+    const get = window.FIREBASE_GET;
+    const child = window.FIREBASE_CHILD;
+
+    const snapshot = await get(child(dbRef(db), `agendamentos/${key}`));
+    let ocupados = [];
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      ocupados = Object.values(data).map(a => a.horario);
+    }
+    renderSlots(ocupados);
+  } catch(e) {
+    renderSlots([]);
+  }
+
   updatePreview();
 }
 
-function renderSlots(key) {
-  const ocp = OCUPADOS[key] || [];
-  document.getElementById('slots-grid').innerHTML = HORARIOS.map(h => {
-    const taken = ocp.includes(h);
+function renderSlots(ocupados) {
+  const html = HORARIOS.map(h => {
+    const taken = ocupados.includes(h);
     const sel = state.slot === h;
-    return `<div class="slot ${taken?'taken':''} ${sel?'selected':''}" ${!taken?`onclick="selSlot('${h}')"`:''}>${h}</div>`;
+    return `<div class="slot ${taken?'taken':''} ${sel?'selected':''}" ${!taken?`onclick="selSlot('${h}')"`:''}>${taken ? h + ' ✗' : h}</div>`;
   }).join('');
+  document.getElementById('slots-container').innerHTML = `<div class="slots-grid">${html}</div>`;
 }
 
 function selSlot(h) {
   state.slot = h;
   document.getElementById('btn2').disabled = false;
-  renderSlots(state.date);
+  // Re-renderizar com horário selecionado
+  const slots = document.querySelectorAll('.slot');
+  slots.forEach(s => {
+    s.classList.remove('selected');
+    if (s.textContent === h) s.classList.add('selected');
+  });
   updatePreview();
 }
 
@@ -519,16 +419,10 @@ function changeMonth(dir) {
 
 function updatePreview() {
   const el = document.getElementById('booking-preview');
-  if (!state.svc && !state.date) {
-    el.innerHTML = '<div class="booking-empty">Nenhum item selecionado ainda</div>';
-    return;
-  }
+  if (!state.svc && !state.date) { el.innerHTML = '<div class="booking-empty">Nenhum item selecionado ainda</div>'; return; }
   let html = '';
   if (state.svc) html += `<div class="summary-item"><span class="lbl">Serviço</span><span class="val">${state.svc.icon} ${state.svc.name}</span></div>`;
-  if (state.date) {
-    const [y,m,d] = state.date.split('-');
-    html += `<div class="summary-item"><span class="lbl">Data</span><span class="val">${d}/${m}/${y}</span></div>`;
-  }
+  if (state.date) { const [y,m,d] = state.date.split('-'); html += `<div class="summary-item"><span class="lbl">Data</span><span class="val">${d}/${m}/${y}</span></div>`; }
   if (state.slot) html += `<div class="summary-item"><span class="lbl">Horário</span><span class="val">${state.slot}</span></div>`;
   el.innerHTML = html;
 }
@@ -546,15 +440,47 @@ function renderSummary() {
   `;
 }
 
-function confirmar() {
+async function confirmar() {
   const [y,m,d] = state.date.split('-');
   const nome = document.getElementById('f-nome').value;
   const wa = document.getElementById('f-wa').value;
+
+  // Salvar no Firebase
+  try {
+    const db = window.FIREBASE_DB;
+    const dbRef = window.FIREBASE_REF;
+    const set = window.FIREBASE_SET;
+    const id = Date.now().toString();
+    await set(dbRef(db, `agendamentos/${state.date}/${id}`), {
+      horario: state.slot,
+      servico: state.svc.name,
+      nome: nome,
+      whatsapp: wa,
+      status: 'pendente',
+      criadoEm: new Date().toISOString()
+    });
+  } catch(e) {
+    console.log('Firebase erro:', e);
+  }
+
+  // Enviar WhatsApp
   const msg = `Olá Dantielly! Quero agendar um horário 🍯\n\n👤 Nome: ${nome}\n📋 Serviço: ${state.svc.icon} ${state.svc.name}\n📅 Data: ${d}/${m}/${y}\n🕐 Horário: ${state.slot}\n📱 WhatsApp: ${wa}\n\nPode confirmar?`;
   window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`, '_blank');
+
   [1,2,3,4].forEach(i => document.getElementById('step-'+i).style.display = 'none');
   document.getElementById('step-success').style.display = 'block';
   document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+}
+
+function validarEAvancar() {
+  const nome = document.getElementById('f-nome').value.trim();
+  const wa = document.getElementById('f-wa').value.replace(/\D/g,'');
+  let ok = true;
+  if (nome.length < 3) { document.getElementById('err-nome').classList.add('show'); ok = false; }
+  else document.getElementById('err-nome').classList.remove('show');
+  if (wa.length < 10) { document.getElementById('err-wa').classList.add('show'); ok = false; }
+  else document.getElementById('err-wa').classList.remove('show');
+  if (ok) goStep(4);
 }
 
 function validateNome() {
@@ -570,27 +496,12 @@ function maskPhone(el) {
   el.value = v;
 }
 
-document.getElementById('btn3').addEventListener('click', function(e) {
-  e.preventDefault();
-  const nome = document.getElementById('f-nome').value.trim();
-  const wa = document.getElementById('f-wa').value.replace(/\D/g,'');
-  let ok = true;
-  if (nome.length < 3) { document.getElementById('err-nome').classList.add('show'); ok = false; }
-  if (wa.length < 10) { document.getElementById('err-wa').classList.add('show'); ok = false; }
-  else document.getElementById('err-wa').classList.remove('show');
-  if (ok) { state.nome = nome; state.wa = wa; goStep(4); }
-}, true);
-
 function resetar() {
-  state = { svc:null, date:null, slot:null, nome:'', wa:'', tel:'', email:'', calY:2026, calM:4 };
-  document.getElementById('f-nome').value = '';
-  document.getElementById('f-wa').value = '';
-  document.getElementById('f-tel').value = '';
-  document.getElementById('f-email').value = '';
+  state = { svc:null, date:null, slot:null, nome:'', wa:'', calY:2026, calM:4 };
+  ['f-nome','f-wa','f-tel','f-email'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('step-success').style.display = 'none';
   document.getElementById('booking-preview').innerHTML = '<div class="booking-empty">Nenhum item selecionado ainda</div>';
-  goStep(1);
-  renderServices();
+  goStep(1); renderServices();
 }
 
 renderServices();
