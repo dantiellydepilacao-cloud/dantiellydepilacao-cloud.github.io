@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agendar Horário — Dantielly Depilação</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --avo-xdark: #3a4f2a;
+    --avo-dark:  #4e6638;
+    --avo:       #6b8c50;
+    --avo-mid:   #90aa72;
+    --avo-light: #b9cc9a;
+    --avo-pale:  #dceac4;
+    --avo-cream: #f2f8e9;
+    --avo-blush: #f8fcf2;
+    --honey:     #c4892a;
+    --honey-light:#e8b86d;
+    --white:     #ffffff;
+    --ink:       #232e19;
+    --muted:     #7a9060;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--avo-blush);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 500;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 3rem;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--avo-pale);
+  }
+  .brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; color: var(--avo-xdark); text-decoration: none;
+  }
+  .nav-back {
+    display: flex; align-items: center; gap: .5rem;
+    font-size: .8rem; color: var(--muted); text-decoration: none;
+    font-weight: 500; letter-spacing: .06em;
+    transition: color .2s;
+  }
+  .nav-back:hover { color: var(--avo-xdark); }
+
+  /* LAYOUT */
+  .page {
+    max-width: 960px; margin: 0 auto;
+    padding: 5.5rem 1.5rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* LEFT PANEL */
+  .left-panel {}
+  .page-eyebrow {
+    font-size: .7rem; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--honey); font-weight: 600; margin-bottom: .6rem;
+  }
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 400; line-height: 1.2; color: var(--avo-xdark);
+    margin-bottom: .8rem;
+  }
+  .page-title em { font-style: italic; color: var(--honey); }
+  .page-desc { font-size: .9rem; color: var(--muted); line-height: 1.7; margin-bottom: 2rem; }
+
+  /* STEPS */
+  .steps-nav {
+    display: flex; gap: 0; margin-bottom: 2rem;
+    border-radius: 1rem; overflow: hidden;
+    border: 1px solid var(--avo-pale);
+  }
+  .step-btn {
+    flex: 1; padding: .7rem .5rem; border: none; background: var(--white);
+    font-size: .75rem; font-weight: 500; color: var(--muted);
+    cursor: default; display: flex; align-items: center; justify-content: center;
+    gap: .4rem; border-right: 1px solid var(--avo-pale); transition: all .25s;
+  }
+  .step-btn:last-child { border-right: none; }
+  .step-btn.active { background: var(--avo-xdark); color: var(--white); }
+  .step-btn.done { background: var(--avo-cream); color: var(--avo-dark); }
+  .step-num {
+    width: 20px; height: 20px; border-radius: 50%; font-size: .7rem;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.2); flex-shrink: 0;
+  }
+  .step-btn.active .step-num { background: rgba(255,255,255,.25); }
+  .step-btn.done .step-num { background: var(--avo-pale); color: var(--avo-dark); }
+
+  /* CARDS */
+  .card {
+    background: var(--white); border: 1px solid var(--avo-pale);
+    border-radius: 1.4rem; padding: 1.6rem; margin-bottom: 1rem;
+  }
+  .card-title {
+    font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--honey); font-weight: 600; margin-bottom: 1.2rem;
+  }
+
+  /* SERVICES */
+  .services-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: .8rem;
+  }
+  .svc-btn {
+    border: 1.5px solid var(--avo-pale); border-radius: 1rem;
+    background: var(--white); padding: 1rem; cursor: pointer;
+    text-align: left; transition: all .2s; position: relative;
+  }
+  .svc-btn:hover { border-color: var(--avo-light); background: var(--avo-cream); }
+  .svc-btn.selected { border-color: var(--avo-xdark); background: var(--avo-cream); }
+  .svc-btn.selected::after {
+    content: '✓'; position: absolute; top: .6rem; right: .8rem;
+    font-size: .75rem; color: var(--avo-xdark); font-weight: 700;
+  }
+  .svc-icon { font-size: 1.4rem; margin-bottom: .5rem; }
+  .svc-name { font-size: .88rem; font-weight: 600; color: var(--ink); margin-bottom: .2rem; }
+  .svc-dur { font-size: .75rem; color: var(--muted); }
+
+  /* CALENDAR */
+  .cal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .cal-nav-btn {
+    width: 32px; height: 32px; border: 1px solid var(--avo-pale);
+    border-radius: .6rem; background: var(--white);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: var(--muted); transition: all .2s;
+  }
+  .cal-nav-btn:hover { border-color: var(--avo); color: var(--avo-xdark); }
+  .cal-month { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--avo-xdark); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-label { text-align: center; font-size: .68rem; color: var(--muted); padding: 4px 0; font-weight: 500; }
+  .cal-day {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-size: .82rem; border-radius: .5rem; cursor: pointer; transition: all .15s;
+    color: var(--ink);
+  }
+  .cal-day:hover:not(.disabled):not(.empty) { background: var(--avo-pale); }
+  .cal-day.today { color: var(--honey); font-weight: 600; }
+  .cal-day.selected { background: var(--avo-xdark); color: var(--white); }
+  .cal-day.disabled { color: var(--avo-pale); cursor: default; }
+  .cal-day.empty { cursor: default; }
+
+  /* SLOTS */
+  .slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+  .slot {
+    padding: .6rem; border: 1.5px solid var(--avo-pale);
+    border-radius: .8rem; text-align: center; font-size: .82rem;
+    cursor: pointer; transition: all .2s; color: var(--ink);
+  }
+  .slot:hover:not(.taken) { border-color: var(--avo); background: var(--avo-cream); }
+  .slot.selected { background: var(--avo-xdark); color: var(--white); border-color: var(--avo-xdark); }
+  .slot.taken { background: var(--avo-blush); color: var(--avo-pale); cursor: default; text-decoration: line-through; }
+
+  /* FORM */
+  .form-group { margin-bottom: 1rem; }
+  .form-label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: .4rem; font-weight: 500; }
+  .form-label .opt { font-weight: 400; color: var(--avo-light); }
+  input[type=text], input[type=tel], input[type=email] {
+    width: 100%; padding: .75rem 1rem;
+    border: 1.5px solid var(--avo-pale); border-radius: .8rem;
+    font-family: 'Outfit', sans-serif; font-size: .88rem;
+    color: var(--ink); background: var(--white); outline: none;
+    transition: border-color .2s;
+  }
+  input:focus { border-color: var(--avo); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+  .field-err { font-size: .72rem; color: #c0392b; margin-top: .3rem; display: none; }
+  .field-err.show { display: block; }
+
+  /* SUMMARY */
+  .summary-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: .7rem 0; border-bottom: 1px solid var(--avo-pale); font-size: .88rem;
+  }
+  .summary-item:last-child { border-bottom: none; }
+  .summary-item .lbl { color: var(--muted); }
+  .summary-item .val { font-weight: 500; color: var(--ink); }
+  .status-tag {
+    font-size: .72rem; padding: .25rem .7rem; border-radius: 1rem;
+    background: var(--avo-pale); color: var(--avo-dark);
+  }
+
+  /* RIGHT PANEL */
+  .right-panel { position: sticky; top: 5.5rem; }
+  .info-card {
+    background: var(--avo-xdark); border-radius: 1.4rem; padding: 1.6rem;
+    color: var(--white); margin-bottom: 1rem;
+  }
+  .info-card h3 {
+    font-family: 'Playfair Display', serif; font-size: 1.1rem;
+    margin-bottom: 1rem; color: var(--white);
+  }
+  .info-item {
+    display: flex; align-items: flex-start; gap: .7rem;
+    font-size: .82rem; color: rgba(255,255,255,.7); margin-bottom: .7rem;
+  }
+  .info-item:last-child { margin-bottom: 0; }
+  .info-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--honey-light); flex-shrink: 0; margin-top: 5px; }
+
+  .booking-card {
+    background: var(--white); border: 1px solid var(--avo-pale);
+    border-radius: 1.4rem; padding: 1.4rem;
+  }
+  .booking-card h4 { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 1rem; }
+  .booking-empty { text-align: center; padding: 1.5rem 0; color: var(--avo-light); font-size: .85rem; }
+
+  /* BUTTONS */
+  .btn-primary {
+    width: 100%; padding: .95rem; background: var(--avo-xdark); color: var(--white);
+    border: none; border-radius: 1rem; font-family: 'Outfit', sans-serif;
+    font-size: .9rem; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: .5rem;
+    transition: all .25s; margin-top: 1rem;
+  }
+  .btn-primary:hover { background: var(--avo-dark); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: .4; cursor: default; transform: none; }
+  .btn-wa { background: #25d366; }
+  .btn-wa:hover { background: #1ebe5d; }
+  .btn-ghost {
+    width: 100%; padding: .85rem; background: transparent; color: var(--muted);
+    border: 1.5px solid var(--avo-pale); border-radius: 1rem;
+    font-family: 'Outfit', sans-serif; font-size: .85rem; cursor: pointer;
+    transition: all .2s; margin-top: .6rem;
+  }
+  .btn-ghost:hover { border-color: var(--avo-light); color: var(--avo-dark); }
+
+  /* SUCCESS */
+  .success-wrap { text-align: center; padding: 2rem 1rem; }
+  .success-icon {
+    width: 64px; height: 64px; background: var(--avo-cream);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; margin: 0 auto 1.2rem;
+  }
+  .success-wrap h2 {
+    font-family: 'Playfair Display', serif; font-size: 1.4rem;
+    color: var(--avo-xdark); margin-bottom: .6rem;
+  }
+  .success-wrap p { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.2rem; }
+    .page { grid-template-columns: 1fr; padding: 4.5rem 1rem 2rem; gap: 1.2rem; }
+    .right-panel { position: static; order: -1; }
+    .info-card { display: none; }
+    .services-grid { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .steps-nav { gap: 0; }
+    .step-btn { font-size: .68rem; padding: .6rem .3rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand-name">Dantielly</a>
+  <a href="index.html" class="nav-back">← Voltar ao site</a>
+</nav>
+
+<div class="page">
+  <div class="left-panel">
+    <div class="page-eyebrow">Agendamento online</div>
+    <h1 class="page-title">Agende seu <em>horário</em></h1>
+    <p class="page-desc">Simples, rápido e sem complicação. Escolha o serviço, a data e o horário ideal para você.</p>
+
+    <div class="steps-nav">
+      <div class="step-btn active" id="step-btn-1">
+        <div class="step-num">1</div> Serviço
+      </div>
+      <div class="step-btn" id="step-btn-2">
+        <div class="step-num">2</div> Data & hora
+      </div>
+      <div class="step-btn" id="step-btn-3">
+        <div class="step-num">3</div> Seus dados
+      </div>
+      <div class="step-btn" id="step-btn-4">
+        <div class="step-num">4</div> Confirmar
+      </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div id="step-1">
+      <div class="card">
+        <div class="card-title">Qual serviço você deseja?</div>
+        <div class="services-grid" id="services-grid"></div>
+      </div>
+      <button class="btn-primary" id="btn1" onclick="goStep(2)" disabled>
+        Continuar →
+      </button>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="step-2" style="display:none">
+      <div class="card">
+        <div class="card-title">Escolha a data</div>
+        <div class="cal-header">
+          <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+          <span class="cal-month" id="cal-label"></span>
+          <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <div class="card" id="slots-card" style="display:none">
+        <div class="card-title">Horários disponíveis</div>
+        <div class="slots-grid" id="slots-grid"></div>
+      </div>
+      <button class="btn-primary" id="btn2" onclick="goStep(3)" disabled>Continuar →</button>
+      <button class="btn-ghost" onclick="goStep(1)">← Voltar</button>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="step-3" style="display:none">
+      <div class="card">
+        <div class="card-title">Seus dados</div>
+        <div class="form-group">
+          <label class="form-label">Nome completo</label>
+          <input type="text" id="f-nome" placeholder="Seu nome completo" oninput="validateNome()" />
+          <div class="field-err" id="err-nome">Digite seu nome completo</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">WhatsApp</label>
+            <input type="tel" id="f-wa" placeholder="(61) 9xxxx-xxxx" oninput="maskPhone(this)" />
+            <div class="field-err" id="err-wa">WhatsApp inválido</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Telefone <span class="opt">(opcional)</span></label>
+            <input type="tel" id="f-tel" placeholder="(61) 9xxxx-xxxx" oninput="maskPhone(this)" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail <span class="opt">(opcional)</span></label>
+          <input type="email" id="f-email" placeholder="seu@email.com" />
+        </div>
+      </div>
+      <button class="btn-primary" id="btn3" onclick="goStep(4)">Continuar →</button>
+      <button class="btn-ghost" onclick="goStep(2)">← Voltar</button>
+    </div>
+
+    <!-- STEP 4 -->
+    <div id="step-4" style="display:none">
+      <div class="card">
+        <div class="card-title">Confirme seu agendamento</div>
+        <div id="summary-content"></div>
+      </div>
+      <button class="btn-primary btn-wa" onclick="confirmar()">
+        💬 Confirmar pelo WhatsApp
+      </button>
+      <button class="btn-ghost" onclick="goStep(3)">← Voltar</button>
+      <p style="font-size:.75rem;color:var(--muted);text-align:center;margin-top:.8rem">
+        Você será redirecionada para o WhatsApp com os dados já preenchidos
+      </p>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="step-success" style="display:none">
+      <div class="card">
+        <div class="success-wrap">
+          <div class="success-icon">🌿</div>
+          <h2>Agendamento enviado!</h2>
+          <p>Sua mensagem foi enviada para a Dantielly.<br>Aguarde a confirmação pelo WhatsApp.</p>
+          <button class="btn-primary" style="margin-top:1.5rem" onclick="resetar()">
+            Fazer novo agendamento
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="info-card">
+      <h3>Dantielly Depilação 🍯</h3>
+      <div class="info-item"><div class="info-dot"></div> Águas Lindas de Goiás — GO</div>
+      <div class="info-item"><div class="info-dot"></div> Seg a Sáb · 09h às 18h</div>
+      <div class="info-item"><div class="info-dot"></div> Método Híbrido exclusivo</div>
+      <div class="info-item"><div class="info-dot"></div> Atendimento com hora marcada</div>
+    </div>
+    <div class="booking-card">
+      <h4>Seu agendamento</h4>
+      <div id="booking-preview">
+        <div class="booking-empty">Nenhum item selecionado ainda</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SERVICES = [
+  { id:1, icon:'🦵', name:'Pernas Completas', dur:'60 min' },
+  { id:2, icon:'🍯', name:'Virilha Completa', dur:'40 min' },
+  { id:3, icon:'💪', name:'Braços & Axila', dur:'30 min' },
+  { id:4, icon:'✨', name:'Corpo Completo', dur:'90 min' },
+  { id:5, icon:'🌿', name:'Buço & Facial', dur:'20 min' },
+  { id:6, icon:'🎁', name:'Pacotes Mensais', dur:'Consulte' },
+  { id:7, icon:'👙', name:'Glúteos', dur:'30 min' },
+  { id:8, icon:'💆', name:'Abdômen', dur:'30 min' },
+];
+
+const HORARIOS = ['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+const OCUPADOS = {
+  '2026-05-27': ['09:00','10:00','14:00'],
+  '2026-05-28': ['09:30','11:00','15:00'],
+  '2026-05-30': ['09:00','09:30','10:00','13:00'],
+};
+const WA = '5561991763429';
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DIAS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+let state = { svc:null, date:null, slot:null, nome:'', wa:'', tel:'', email:'', calY:2026, calM:4 };
+
+function renderServices() {
+  document.getElementById('services-grid').innerHTML = SERVICES.map(s =>
+    `<button class="svc-btn" id="svc-${s.id}" onclick="selSvc(${s.id})">
+      <div class="svc-icon">${s.icon}</div>
+      <div class="svc-name">${s.name}</div>
+      <div class="svc-dur">${s.dur}</div>
+    </button>`
+  ).join('');
+}
+
+function selSvc(id) {
+  state.svc = SERVICES.find(s => s.id === id);
+  document.querySelectorAll('.svc-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('svc-'+id).classList.add('selected');
+  document.getElementById('btn1').disabled = false;
+  updatePreview();
+}
+
+function goStep(n) {
+  [1,2,3,4].forEach(i => {
+    document.getElementById('step-'+i).style.display = 'none';
+    const btn = document.getElementById('step-btn-'+i);
+    btn.classList.remove('active','done');
+    if (i < n) btn.classList.add('done');
+    else if (i === n) btn.classList.add('active');
+  });
+  document.getElementById('step-success').style.display = 'none';
+  document.getElementById('step-'+n).style.display = 'block';
+  if (n === 2) renderCal();
+  if (n === 4) renderSummary();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderCal() {
+  const { calY:y, calM:m } = state;
+  document.getElementById('cal-label').textContent = MESES[m] + ' ' + y;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const first = new Date(y, m, 1).getDay();
+  const total = new Date(y, m+1, 0).getDate();
+  let html = DIAS.map(d => `<div class="cal-label">${d}</div>`).join('');
+  for (let i = 0; i < first; i++) html += `<div class="cal-day empty"></div>`;
+  for (let d = 1; d <= total; d++) {
+    const date = new Date(y, m, d);
+    const past = date < today;
+    const sun = date.getDay() === 0;
+    const key = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const sel = state.date === key;
+    const isToday = date.getTime() === today.getTime();
+    let cls = '';
+    if (past || sun) cls = 'disabled';
+    else if (sel) cls = 'selected';
+    else if (isToday) cls = 'today';
+    const click = (!past && !sun) ? `onclick="selDate('${key}')"` : '';
+    html += `<div class="cal-day ${cls}" ${click}>${d}</div>`;
+  }
+  document.getElementById('cal-grid').innerHTML = html;
+}
+
+function selDate(key) {
+  state.date = key; state.slot = null;
+  document.getElementById('btn2').disabled = true;
+  renderCal();
+  renderSlots(key);
+  document.getElementById('slots-card').style.display = 'block';
+  updatePreview();
+}
+
+function renderSlots(key) {
+  const ocp = OCUPADOS[key] || [];
+  document.getElementById('slots-grid').innerHTML = HORARIOS.map(h => {
+    const taken = ocp.includes(h);
+    const sel = state.slot === h;
+    return `<div class="slot ${taken?'taken':''} ${sel?'selected':''}" ${!taken?`onclick="selSlot('${h}')"`:''}>${h}</div>`;
+  }).join('');
+}
+
+function selSlot(h) {
+  state.slot = h;
+  document.getElementById('btn2').disabled = false;
+  renderSlots(state.date);
+  updatePreview();
+}
+
+function changeMonth(dir) {
+  state.calM += dir;
+  if (state.calM < 0) { state.calM = 11; state.calY--; }
+  if (state.calM > 11) { state.calM = 0; state.calY++; }
+  state.date = null; state.slot = null;
+  document.getElementById('slots-card').style.display = 'none';
+  document.getElementById('btn2').disabled = true;
+  renderCal();
+  updatePreview();
+}
+
+function updatePreview() {
+  const el = document.getElementById('booking-preview');
+  if (!state.svc && !state.date) {
+    el.innerHTML = '<div class="booking-empty">Nenhum item selecionado ainda</div>';
+    return;
+  }
+  let html = '';
+  if (state.svc) html += `<div class="summary-item"><span class="lbl">Serviço</span><span class="val">${state.svc.icon} ${state.svc.name}</span></div>`;
+  if (state.date) {
+    const [y,m,d] = state.date.split('-');
+    html += `<div class="summary-item"><span class="lbl">Data</span><span class="val">${d}/${m}/${y}</span></div>`;
+  }
+  if (state.slot) html += `<div class="summary-item"><span class="lbl">Horário</span><span class="val">${state.slot}</span></div>`;
+  el.innerHTML = html;
+}
+
+function renderSummary() {
+  const [y,m,d] = state.date.split('-');
+  document.getElementById('summary-content').innerHTML = `
+    <div class="summary-item"><span class="lbl">Serviço</span><span class="val">${state.svc.icon} ${state.svc.name}</span></div>
+    <div class="summary-item"><span class="lbl">Duração</span><span class="val">${state.svc.dur}</span></div>
+    <div class="summary-item"><span class="lbl">Data</span><span class="val">${d}/${m}/${y}</span></div>
+    <div class="summary-item"><span class="lbl">Horário</span><span class="val">${state.slot}</span></div>
+    <div class="summary-item"><span class="lbl">Nome</span><span class="val">${document.getElementById('f-nome').value}</span></div>
+    <div class="summary-item"><span class="lbl">WhatsApp</span><span class="val">${document.getElementById('f-wa').value}</span></div>
+    <div class="summary-item"><span class="lbl">Status</span><span class="val"><span class="status-tag">Aguardando confirmação</span></span></div>
+  `;
+}
+
+function confirmar() {
+  const [y,m,d] = state.date.split('-');
+  const nome = document.getElementById('f-nome').value;
+  const wa = document.getElementById('f-wa').value;
+  const msg = `Olá Dantielly! Quero agendar um horário 🍯\n\n👤 Nome: ${nome}\n📋 Serviço: ${state.svc.icon} ${state.svc.name}\n📅 Data: ${d}/${m}/${y}\n🕐 Horário: ${state.slot}\n📱 WhatsApp: ${wa}\n\nPode confirmar?`;
+  window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`, '_blank');
+  [1,2,3,4].forEach(i => document.getElementById('step-'+i).style.display = 'none');
+  document.getElementById('step-success').style.display = 'block';
+  document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+}
+
+function validateNome() {
+  const v = document.getElementById('f-nome').value.trim();
+  document.getElementById('err-nome').classList.toggle('show', v.length > 0 && v.length < 3);
+}
+
+function maskPhone(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  if (v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+  else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+  else if (v.length > 0) v = `(${v}`;
+  el.value = v;
+}
+
+document.getElementById('btn3').addEventListener('click', function(e) {
+  e.preventDefault();
+  const nome = document.getElementById('f-nome').value.trim();
+  const wa = document.getElementById('f-wa').value.replace(/\D/g,'');
+  let ok = true;
+  if (nome.length < 3) { document.getElementById('err-nome').classList.add('show'); ok = false; }
+  if (wa.length < 10) { document.getElementById('err-wa').classList.add('show'); ok = false; }
+  else document.getElementById('err-wa').classList.remove('show');
+  if (ok) { state.nome = nome; state.wa = wa; goStep(4); }
+}, true);
+
+function resetar() {
+  state = { svc:null, date:null, slot:null, nome:'', wa:'', tel:'', email:'', calY:2026, calM:4 };
+  document.getElementById('f-nome').value = '';
+  document.getElementById('f-wa').value = '';
+  document.getElementById('f-tel').value = '';
+  document.getElementById('f-email').value = '';
+  document.getElementById('step-success').style.display = 'none';
+  document.getElementById('booking-preview').innerHTML = '<div class="booking-empty">Nenhum item selecionado ainda</div>';
+  goStep(1);
+  renderServices();
+}
+
+renderServices();
+</script>
+</body>
+</html>
