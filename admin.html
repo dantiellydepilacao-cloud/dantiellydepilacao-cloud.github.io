@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Admin — Dantielly Depilação</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --avo-xdark: #3a4f2a; --avo-dark: #4e6638; --avo: #6b8c50;
+    --avo-light: #b9cc9a; --avo-pale: #dceac4; --avo-cream: #f2f8e9;
+    --avo-blush: #f8fcf2; --honey: #c4892a; --honey-light: #e8b86d;
+    --white: #ffffff; --ink: #232e19; --muted: #7a9060;
+    --red: #c0392b; --red-light: #fdf0ef; --green: #27ae60; --green-light: #eafaf1;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Outfit', sans-serif; background: var(--avo-blush); color: var(--ink); min-height: 100vh; }
+
+  /* LOGIN */
+  .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .login-card { background: var(--white); border: 1px solid var(--avo-pale); border-radius: 1.6rem; padding: 2.5rem; width: 100%; max-width: 380px; text-align: center; }
+  .login-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--avo-xdark); margin-bottom: .3rem; }
+  .login-sub { font-size: .78rem; color: var(--muted); margin-bottom: 2rem; letter-spacing: .1em; text-transform: uppercase; }
+  .login-field { margin-bottom: 1rem; text-align: left; }
+  .login-field label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: .4rem; font-weight: 500; }
+  .login-field input { width: 100%; padding: .8rem 1rem; border: 1.5px solid var(--avo-pale); border-radius: .8rem; font-family: 'Outfit', sans-serif; font-size: .9rem; outline: none; transition: border-color .2s; }
+  .login-field input:focus { border-color: var(--avo); }
+  .login-err { font-size: .75rem; color: var(--red); margin-top: .5rem; display: none; }
+  .login-err.show { display: block; }
+  .btn-login { width: 100%; padding: .9rem; background: var(--avo-xdark); color: var(--white); border: none; border-radius: .8rem; font-family: 'Outfit', sans-serif; font-size: .9rem; font-weight: 600; cursor: pointer; transition: opacity .2s; margin-top: .5rem; }
+  .btn-login:hover { opacity: .9; }
+
+  /* ADMIN */
+  .admin-wrap { display: none; }
+  .admin-nav { background: var(--avo-xdark); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+  .admin-brand { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--white); }
+  .admin-brand span { font-size: .7rem; color: var(--honey-light); display: block; letter-spacing: .1em; text-transform: uppercase; }
+  .btn-logout { background: rgba(255,255,255,.1); color: var(--white); border: 1px solid rgba(255,255,255,.2); border-radius: .6rem; padding: .4rem 1rem; font-size: .8rem; cursor: pointer; font-family: 'Outfit', sans-serif; transition: background .2s; }
+  .btn-logout:hover { background: rgba(255,255,255,.2); }
+
+  .admin-body { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* STATS */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: var(--white); border: 1px solid var(--avo-pale); border-radius: 1.2rem; padding: 1.2rem 1.4rem; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 400; color: var(--avo-xdark); line-height: 1; }
+  .stat-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-top: .3rem; }
+  .stat-card.honey { border-color: var(--honey-light); }
+  .stat-card.honey .stat-num { color: var(--honey); }
+
+  /* TABS */
+  .tabs { display: flex; gap: .5rem; margin-bottom: 1.5rem; }
+  .tab { padding: .6rem 1.4rem; border: 1.5px solid var(--avo-pale); border-radius: 2rem; font-size: .82rem; font-weight: 500; cursor: pointer; color: var(--muted); background: var(--white); transition: all .2s; }
+  .tab.active { background: var(--avo-xdark); color: var(--white); border-color: var(--avo-xdark); }
+
+  /* FILTER */
+  .filter-bar { display: flex; gap: .8rem; margin-bottom: 1.2rem; align-items: center; flex-wrap: wrap; }
+  .filter-bar input[type=date] { padding: .55rem .9rem; border: 1.5px solid var(--avo-pale); border-radius: .7rem; font-family: 'Outfit', sans-serif; font-size: .85rem; outline: none; }
+  .filter-bar select { padding: .55rem .9rem; border: 1.5px solid var(--avo-pale); border-radius: .7rem; font-family: 'Outfit', sans-serif; font-size: .85rem; outline: none; background: var(--white); }
+  .btn-refresh { padding: .55rem 1.2rem; background: var(--avo-cream); border: 1.5px solid var(--avo-pale); border-radius: .7rem; font-size: .82rem; cursor: pointer; color: var(--avo-dark); font-family: 'Outfit', sans-serif; transition: all .2s; }
+  .btn-refresh:hover { background: var(--avo-pale); }
+
+  /* AGENDAMENTOS */
+  .ag-list { display: flex; flex-direction: column; gap: .8rem; }
+  .ag-card { background: var(--white); border: 1px solid var(--avo-pale); border-radius: 1.2rem; padding: 1.2rem 1.4rem; display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+  .ag-card.confirmado { border-left: 4px solid var(--green); }
+  .ag-card.cancelado { border-left: 4px solid var(--red); opacity: .6; }
+  .ag-card.pendente { border-left: 4px solid var(--honey); }
+  .ag-card.bloqueado { border-left: 4px solid var(--muted); background: var(--avo-blush); }
+  .ag-time { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--avo-xdark); min-width: 60px; }
+  .ag-info { flex: 1; }
+  .ag-nome { font-size: .92rem; font-weight: 600; color: var(--ink); }
+  .ag-servico { font-size: .78rem; color: var(--muted); margin-top: .2rem; }
+  .ag-wa { font-size: .78rem; color: var(--avo-dark); margin-top: .2rem; }
+  .ag-status { font-size: .72rem; padding: .25rem .8rem; border-radius: 1rem; font-weight: 500; }
+  .ag-status.pendente { background: #fef9e7; color: #a07825; }
+  .ag-status.confirmado { background: var(--green-light); color: var(--green); }
+  .ag-status.cancelado { background: var(--red-light); color: var(--red); }
+  .ag-status.bloqueado { background: var(--avo-pale); color: var(--muted); }
+  .ag-actions { display: flex; gap: .5rem; }
+  .btn-confirmar { padding: .4rem .9rem; background: var(--green-light); color: var(--green); border: 1px solid var(--green); border-radius: .6rem; font-size: .78rem; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 500; transition: all .2s; }
+  .btn-confirmar:hover { background: var(--green); color: var(--white); }
+  .btn-cancelar { padding: .4rem .9rem; background: var(--red-light); color: var(--red); border: 1px solid var(--red); border-radius: .6rem; font-size: .78rem; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 500; transition: all .2s; }
+  .btn-cancelar:hover { background: var(--red); color: var(--white); }
+  .btn-desbloquear { padding: .4rem .9rem; background: var(--avo-pale); color: var(--muted); border: 1px solid var(--avo-light); border-radius: .6rem; font-size: .78rem; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 500; transition: all .2s; }
+
+  .empty-state { text-align: center; padding: 3rem; color: var(--muted); font-size: .9rem; }
+
+  /* BLOQUEIO */
+  .bloquear-card { background: var(--white); border: 1px solid var(--avo-pale); border-radius: 1.2rem; padding: 1.4rem; margin-bottom: 1rem; }
+  .bloquear-card h3 { font-size: .85rem; font-weight: 600; color: var(--ink); margin-bottom: 1rem; }
+  .bloquear-row { display: flex; gap: .8rem; align-items: flex-end; flex-wrap: wrap; }
+  .bloquear-field { display: flex; flex-direction: column; gap: .4rem; }
+  .bloquear-field label { font-size: .75rem; color: var(--muted); font-weight: 500; }
+  .bloquear-field input, .bloquear-field select { padding: .6rem .9rem; border: 1.5px solid var(--avo-pale); border-radius: .7rem; font-family: 'Outfit', sans-serif; font-size: .85rem; outline: none; background: var(--white); }
+  .btn-bloquear { padding: .65rem 1.4rem; background: var(--avo-xdark); color: var(--white); border: none; border-radius: .7rem; font-family: 'Outfit', sans-serif; font-size: .85rem; font-weight: 500; cursor: pointer; transition: opacity .2s; }
+  .btn-bloquear:hover { opacity: .85; }
+  .bloqueios-list { margin-top: 1rem; display: flex; flex-direction: column; gap: .5rem; }
+  .bloqueio-item { display: flex; align-items: center; justify-content: space-between; padding: .6rem 1rem; background: var(--avo-blush); border: 1px solid var(--avo-pale); border-radius: .7rem; font-size: .82rem; color: var(--muted); }
+  .btn-rm { background: none; border: none; color: var(--red); cursor: pointer; font-size: .8rem; font-weight: 500; }
+
+  .msg-toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--avo-xdark); color: var(--white); padding: .8rem 1.4rem; border-radius: .8rem; font-size: .85rem; display: none; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,.2); }
+
+  @media (max-width: 768px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .admin-body { padding: 1rem; }
+    .ag-card { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">Dantielly</div>
+    <div class="login-sub">Painel Administrativo</div>
+    <div class="login-field">
+      <label>Usuário</label>
+      <input type="text" id="login-user" placeholder="admin" />
+    </div>
+    <div class="login-field">
+      <label>Senha</label>
+      <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')fazerLogin()" />
+    </div>
+    <div class="login-err" id="login-err">Usuário ou senha incorretos</div>
+    <button class="btn-login" onclick="fazerLogin()">Entrar no painel</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="admin-wrap">
+  <nav class="admin-nav">
+    <div class="admin-brand">Dantielly<span>Painel Administrativo 🍯</span></div>
+    <button class="btn-logout" onclick="logout()">Sair</button>
+  </nav>
+
+  <div class="admin-body">
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">Total agendamentos</div>
+      </div>
+      <div class="stat-card honey">
+        <div class="stat-num" id="stat-pendente">0</div>
+        <div class="stat-label">Pendentes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-confirmado">0</div>
+        <div class="stat-label">Confirmados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-hoje">0</div>
+        <div class="stat-label">Hoje</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('agendamentos', this)">Agendamentos</div>
+      <div class="tab" onclick="switchTab('bloqueios', this)">Bloquear Horários</div>
+    </div>
+
+    <!-- TAB AGENDAMENTOS -->
+    <div id="tab-agendamentos">
+      <div class="filter-bar">
+        <input type="date" id="filtro-data" onchange="carregarAgendamentos()" />
+        <select id="filtro-status" onchange="carregarAgendamentos()">
+          <option value="">Todos os status</option>
+          <option value="pendente">Pendentes</option>
+          <option value="confirmado">Confirmados</option>
+          <option value="cancelado">Cancelados</option>
+        </select>
+        <button class="btn-refresh" onclick="carregarAgendamentos()">↻ Atualizar</button>
+      </div>
+      <div class="ag-list" id="ag-list">
+        <div class="empty-state">Carregando agendamentos...</div>
+      </div>
+    </div>
+
+    <!-- TAB BLOQUEIOS -->
+    <div id="tab-bloqueios" style="display:none">
+      <div class="bloquear-card">
+        <h3>Bloquear horário manualmente</h3>
+        <div class="bloquear-row">
+          <div class="bloquear-field">
+            <label>Data</label>
+            <input type="date" id="blq-data" />
+          </div>
+          <div class="bloquear-field">
+            <label>Horário</label>
+            <select id="blq-hora">
+              <option value="">Selecione</option>
+              <option>09:00</option><option>09:30</option><option>10:00</option>
+              <option>10:30</option><option>11:00</option><option>11:30</option>
+              <option>13:00</option><option>13:30</option><option>14:00</option>
+              <option>14:30</option><option>15:00</option><option>15:30</option>
+              <option>16:00</option><option>16:30</option><option>17:00</option>
+              <option>17:30</option>
+            </select>
+          </div>
+          <div class="bloquear-field">
+            <label>Motivo</label>
+            <input type="text" id="blq-motivo" placeholder="Ex: Horário pessoal" style="width:200px" />
+          </div>
+          <button class="btn-bloquear" onclick="bloquearHorario()">Bloquear</button>
+        </div>
+        <div class="bloqueios-list" id="bloqueios-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="msg-toast" id="toast"></div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, get, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDyE_BqLfVi7K3dZV6z08YMuKEaOsnGh_E",
+  authDomain: "dantielly-depilacao.firebaseapp.com",
+  databaseURL: "https://dantielly-depilacao-default-rtdb.firebaseio.com",
+  projectId: "dantielly-depilacao",
+  storageBucket: "dantielly-depilacao.firebasestorage.app",
+  messagingSenderId: "658252770067",
+  appId: "1:658252770067:web:af38d246162e91e3f948e6"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window._db = db;
+window._ref = ref;
+window._get = get;
+window._set = set;
+window._update = update;
+window._remove = remove;
+window._onValue = onValue;
+window.firebaseReady = true;
+</script>
+
+<script>
+// CREDENCIAIS DO ADMIN
+const ADMIN_USER = 'dantielly';
+const ADMIN_PASS = 'depilacao2025';
+
+function fazerLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    document.getElementById('login-wrap').style.display = 'none';
+    document.getElementById('admin-wrap').style.display = 'block';
+    sessionStorage.setItem('admin', '1');
+    carregarAgendamentos();
+    carregarBloqueios();
+    carregarStats();
+  } else {
+    document.getElementById('login-err').classList.add('show');
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('admin');
+  document.getElementById('login-wrap').style.display = 'flex';
+  document.getElementById('admin-wrap').style.display = 'none';
+}
+
+if (sessionStorage.getItem('admin')) {
+  setTimeout(() => {
+    document.getElementById('login-wrap').style.display = 'none';
+    document.getElementById('admin-wrap').style.display = 'block';
+    carregarAgendamentos();
+    carregarBloqueios();
+    carregarStats();
+  }, 500);
+}
+
+function switchTab(tab, el) {
+  document.getElementById('tab-agendamentos').style.display = tab === 'agendamentos' ? 'block' : 'none';
+  document.getElementById('tab-bloqueios').style.display = tab === 'bloqueios' ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function toast(msg, tipo='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = tipo === 'ok' ? '#3a4f2a' : '#c0392b';
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3000);
+}
+
+async function carregarStats() {
+  if (!window.firebaseReady) { setTimeout(carregarStats, 300); return; }
+  const db = window._db;
+  const ref = window._ref;
+  const get = window._get;
+  const hoje = new Date().toISOString().split('T')[0];
+
+  try {
+    const snap = await get(ref(db, 'agendamentos'));
+    if (!snap.exists()) return;
+    const data = snap.val();
+    let total = 0, pendente = 0, confirmado = 0, hojeCount = 0;
+    Object.entries(data).forEach(([date, ags]) => {
+      Object.values(ags).forEach(ag => {
+        if (ag.status === 'bloqueado') return;
+        total++;
+        if (ag.status === 'pendente') pendente++;
+        if (ag.status === 'confirmado') confirmado++;
+        if (date === hoje) hojeCount++;
+      });
+    });
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-pendente').textContent = pendente;
+    document.getElementById('stat-confirmado').textContent = confirmado;
+    document.getElementById('stat-hoje').textContent = hojeCount;
+  } catch(e) {}
+}
+
+async function carregarAgendamentos() {
+  if (!window.firebaseReady) { setTimeout(carregarAgendamentos, 300); return; }
+  const db = window._db;
+  const ref = window._ref;
+  const get = window._get;
+  const filtroData = document.getElementById('filtro-data').value;
+  const filtroStatus = document.getElementById('filtro-status').value;
+  const lista = document.getElementById('ag-list');
+  lista.innerHTML = '<div class="empty-state">Carregando...</div>';
+
+  try {
+    const snap = await get(ref(db, 'agendamentos'));
+    if (!snap.exists()) { lista.innerHTML = '<div class="empty-state">Nenhum agendamento encontrado</div>'; return; }
+
+    const data = snap.val();
+    let items = [];
+
+    Object.entries(data).forEach(([date, ags]) => {
+      if (filtroData && date !== filtroData) return;
+      Object.entries(ags).forEach(([id, ag]) => {
+        if (filtroStatus && ag.status !== filtroStatus) return;
+        items.push({ date, id, ...ag });
+      });
+    });
+
+    items.sort((a, b) => a.date.localeCompare(b.date) || a.horario.localeCompare(b.horario));
+
+    if (!items.length) { lista.innerHTML = '<div class="empty-state">Nenhum agendamento encontrado</div>'; return; }
+
+    lista.innerHTML = items.map(ag => {
+      const [y,m,d] = ag.date.split('-');
+      const isBloqueado = ag.status === 'bloqueado';
+      return `
+        <div class="ag-card ${ag.status}">
+          <div class="ag-time">${ag.horario}</div>
+          <div class="ag-info">
+            <div class="ag-nome">${isBloqueado ? '🔒 ' + (ag.motivo || 'Bloqueado') : ag.nome || '—'}</div>
+            <div class="ag-servico">${d}/${m}/${y} · ${isBloqueado ? 'Horário bloqueado' : (ag.servico || '—')}</div>
+            ${!isBloqueado ? `<div class="ag-wa">📱 ${ag.whatsapp || '—'}</div>` : ''}
+          </div>
+          <span class="ag-status ${ag.status}">${ag.status}</span>
+          <div class="ag-actions">
+            ${ag.status === 'pendente' ? `
+              <button class="btn-confirmar" onclick="atualizarStatus('${ag.date}','${ag.id}','confirmado')">✓ Confirmar</button>
+              <button class="btn-cancelar" onclick="atualizarStatus('${ag.date}','${ag.id}','cancelado')">✗ Cancelar</button>
+            ` : ''}
+            ${ag.status === 'confirmado' ? `<button class="btn-cancelar" onclick="atualizarStatus('${ag.date}','${ag.id}','cancelado')">✗ Cancelar</button>` : ''}
+            ${ag.status === 'cancelado' ? `<button class="btn-confirmar" onclick="atualizarStatus('${ag.date}','${ag.id}','confirmado')">✓ Reativar</button>` : ''}
+            ${isBloqueado ? `<button class="btn-desbloquear" onclick="removerBloqueio('${ag.date}','${ag.id}')">Desbloquear</button>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  } catch(e) {
+    lista.innerHTML = '<div class="empty-state">Erro ao carregar dados</div>';
+  }
+}
+
+async function atualizarStatus(date, id, status) {
+  const db = window._db;
+  const ref = window._ref;
+  const update = window._update;
+  try {
+    await update(ref(db, `agendamentos/${date}/${id}`), { status });
+    toast(status === 'confirmado' ? '✓ Agendamento confirmado!' : '✗ Agendamento cancelado!', status === 'confirmado' ? 'ok' : 'err');
+    carregarAgendamentos();
+    carregarStats();
+  } catch(e) { toast('Erro ao atualizar', 'err'); }
+}
+
+async function bloquearHorario() {
+  const data = document.getElementById('blq-data').value;
+  const hora = document.getElementById('blq-hora').value;
+  const motivo = document.getElementById('blq-motivo').value || 'Bloqueado pela administração';
+  if (!data || !hora) { toast('Preencha data e horário', 'err'); return; }
+
+  const db = window._db;
+  const ref = window._ref;
+  const set = window._set;
+  const id = 'blq_' + Date.now();
+  try {
+    await set(ref(db, `agendamentos/${data}/${id}`), {
+      horario: hora, status: 'bloqueado', motivo,
+      criadoEm: new Date().toISOString()
+    });
+    toast('🔒 Horário bloqueado!');
+    document.getElementById('blq-data').value = '';
+    document.getElementById('blq-hora').value = '';
+    document.getElementById('blq-motivo').value = '';
+    carregarBloqueios();
+  } catch(e) { toast('Erro ao bloquear', 'err'); }
+}
+
+async function carregarBloqueios() {
+  if (!window.firebaseReady) { setTimeout(carregarBloqueios, 300); return; }
+  const db = window._db;
+  const ref = window._ref;
+  const get = window._get;
+  try {
+    const snap = await get(ref(db, 'agendamentos'));
+    if (!snap.exists()) return;
+    const data = snap.val();
+    let bloqueios = [];
+    Object.entries(data).forEach(([date, ags]) => {
+      Object.entries(ags).forEach(([id, ag]) => {
+        if (ag.status === 'bloqueado') {
+          const [y,m,d] = date.split('-');
+          bloqueios.push({ date, id, horario: ag.horario, motivo: ag.motivo, label: `${d}/${m}/${y} às ${ag.horario}` });
+        }
+      });
+    });
+    const el = document.getElementById('bloqueios-list');
+    if (!bloqueios.length) { el.innerHTML = '<div style="font-size:.82rem;color:var(--muted);padding:.5rem 0">Nenhum horário bloqueado</div>'; return; }
+    el.innerHTML = bloqueios.map(b =>
+      `<div class="bloqueio-item">
+        <span>🔒 ${b.label} — ${b.motivo || ''}</span>
+        <button class="btn-rm" onclick="removerBloqueio('${b.date}','${b.id}')">Remover</button>
+      </div>`
+    ).join('');
+  } catch(e) {}
+}
+
+async function removerBloqueio(date, id) {
+  const db = window._db;
+  const ref = window._ref;
+  const remove = window._remove;
+  try {
+    await remove(ref(db, `agendamentos/${date}/${id}`));
+    toast('✓ Bloqueio removido!');
+    carregarBloqueios();
+    carregarAgendamentos();
+  } catch(e) { toast('Erro ao remover', 'err'); }
+}
+</script>
+</body>
+</html>
