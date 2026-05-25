@@ -22,7 +22,6 @@
   .nav-back:hover { color: var(--avo-xdark); }
 
   .page { max-width: 520px; margin: 0 auto; padding: 5.5rem 1.5rem 3rem; }
-
   .page-eyebrow { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--honey); font-weight: 600; margin-bottom: .6rem; }
   .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 400; color: var(--avo-xdark); margin-bottom: .6rem; }
   .page-title em { font-style: italic; color: var(--honey); }
@@ -42,6 +41,7 @@
 
   .ag-card { background: var(--white); border: 1px solid var(--avo-pale); border-radius: 1.4rem; padding: 1.6rem; margin-bottom: 1rem; border-left: 4px solid var(--honey); }
   .ag-card.cancelado { border-left-color: var(--red); opacity: .7; }
+  .ag-card.confirmado { border-left-color: var(--avo); }
   .ag-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
   .ag-data { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--avo-xdark); }
   .ag-hora { font-size: .85rem; color: var(--muted); margin-top: .2rem; }
@@ -61,7 +61,6 @@
   .empty-state { text-align: center; padding: 2.5rem; color: var(--muted); font-size: .88rem; }
   .empty-icon { font-size: 2.5rem; margin-bottom: .8rem; }
 
-  /* REMARCAÇÃO */
   .remarcar-wrap { background: var(--avo-cream); border: 1px solid var(--avo-pale); border-radius: 1.2rem; padding: 1.4rem; margin-top: 1rem; }
   .remarcar-title { font-size: .82rem; font-weight: 600; color: var(--avo-xdark); margin-bottom: 1rem; }
   .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
@@ -86,7 +85,6 @@
   .success-icon { font-size: 3rem; margin-bottom: 1rem; }
   .success-card h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--avo-xdark); margin-bottom: .6rem; }
   .success-card p { font-size: .88rem; color: var(--muted); line-height: 1.6; }
-
   .loading { text-align: center; padding: 2rem; color: var(--muted); font-size: .88rem; }
 
   @media (max-width: 768px) {
@@ -107,7 +105,6 @@
   <h1 class="page-title">Meu <em>agendamento</em></h1>
   <p class="page-desc">Digite seu WhatsApp para ver, cancelar ou remarcar seu horário.</p>
 
-  <!-- BUSCA -->
   <div id="tela-busca">
     <div class="card">
       <div class="card-title">Buscar meu agendamento</div>
@@ -119,14 +116,10 @@
     </div>
   </div>
 
-  <!-- LOADING -->
   <div id="tela-loading" style="display:none">
-    <div class="card">
-      <div class="loading">⏳ Buscando seus agendamentos...</div>
-    </div>
+    <div class="card"><div class="loading">⏳ Buscando seus agendamentos...</div></div>
   </div>
 
-  <!-- RESULTADOS -->
   <div id="tela-resultados" style="display:none">
     <div id="lista-agendamentos"></div>
     <p style="text-align:center;margin-top:1rem">
@@ -134,7 +127,6 @@
     </p>
   </div>
 
-  <!-- SUCESSO -->
   <div id="tela-sucesso" style="display:none">
     <div class="card">
       <div class="success-card">
@@ -147,7 +139,6 @@
   </div>
 </div>
 
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -180,7 +171,7 @@ const DIAS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
 let agendamentosEncontrados = [];
 let remarcandoId = null;
-let calY = 2026, calM = 4;
+let calY = 2026, calM = new Date().getMonth();
 let novaData = null, novoSlot = null;
 
 function maskPhone(el) {
@@ -218,7 +209,7 @@ async function buscarAgendamento() {
       const data = snap.val();
       Object.entries(data).forEach(([date, ags]) => {
         Object.entries(ags).forEach(([id, ag]) => {
-          if (ag.status === 'bloqueado') return;
+          if (ag.status === 'bloqueado' || ag.status === 'cancelado') return;
           const agWa = (ag.whatsapp || '').replace(/\D/g,'');
           if (agWa === wa || agWa.endsWith(wa) || wa.endsWith(agWa)) {
             agendamentosEncontrados.push({ date, id, ...ag });
@@ -243,7 +234,7 @@ function renderResultados() {
       <div class="card">
         <div class="empty-state">
           <div class="empty-icon">🔍</div>
-          Nenhum agendamento encontrado para esse WhatsApp.<br><br>
+          Nenhum agendamento ativo encontrado para esse WhatsApp.<br><br>
           <a href="agendar.html" style="color:var(--avo-dark);font-weight:500">Fazer um agendamento →</a>
         </div>
       </div>`;
@@ -255,11 +246,9 @@ function renderResultados() {
     const hoje = new Date(); hoje.setHours(0,0,0,0);
     const dataAg = new Date(ag.date + 'T12:00:00');
     const passado = dataAg < hoje;
-    const isCancelado = ag.status === 'cancelado';
-    const podeAlterar = !passado && !isCancelado;
 
     return `
-      <div class="ag-card ${isCancelado ? 'cancelado' : ''}">
+      <div class="ag-card ${ag.status}">
         <div class="ag-header">
           <div>
             <div class="ag-data">${d}/${m}/${y}</div>
@@ -271,13 +260,13 @@ function renderResultados() {
           <div class="ag-detail">📋 <strong>${ag.servico || '—'}</strong></div>
           <div class="ag-detail">👤 <strong>${ag.nome || '—'}</strong></div>
         </div>
-        ${podeAlterar ? `
+        ${!passado ? `
           <div class="ag-actions">
             <button class="btn-cancelar-ag" onclick="cancelarAgendamento('${ag.date}','${ag.id}','${ag.horario}','${ag.servico}','${d}/${m}/${y}','${ag.nome}')">✗ Cancelar</button>
-            <button class="btn-remarcar" onclick="iniciarRemarcacao('${ag.date}','${ag.id}','${ag.horario}','${ag.servico}','${d}/${m}/${y}')">📅 Remarcar</button>
+            <button class="btn-remarcar" onclick="iniciarRemarcacao('${ag.date}','${ag.id}','${ag.horario}','${ag.servico}','${d}/${m}/${y}','${ag.nome}')">📅 Remarcar</button>
           </div>
           <div id="remarcar-${ag.id}" style="display:none"></div>
-        ` : `<p style="font-size:.78rem;color:var(--muted);margin-top:.5rem">${passado ? '⏰ Agendamento passado' : '❌ Agendamento cancelado'}</p>`}
+        ` : `<p style="font-size:.78rem;color:var(--muted);margin-top:.5rem">⏰ Agendamento passado</p>`}
       </div>`;
   }).join('');
 }
@@ -286,24 +275,24 @@ async function cancelarAgendamento(date, id, horario, servico, dataLabel, nome) 
   if (!confirm(`Cancelar agendamento de ${dataLabel} às ${horario}?`)) return;
 
   try {
-    await window._update(window._ref(window._db, `agendamentos/${date}/${id}`), { status: 'cancelado' });
+    // DELETA o agendamento do Firebase — horário volta a ficar disponível!
+    await window._remove(window._ref(window._db, `agendamentos/${date}/${id}`));
 
     // Notificar Dantielly no WhatsApp
-    const msg = `⚠️ Dantielly! A cliente *${nome}* cancelou o agendamento:\n\n📋 Serviço: ${servico}\n📅 Data: ${dataLabel}\n🕐 Horário: ${horario}\n\nO horário foi liberado automaticamente.`;
+    const msg = `⚠️ Dantielly! A cliente *${nome}* CANCELOU o agendamento:\n\n📋 Serviço: ${servico}\n📅 Data: ${dataLabel}\n🕐 Horário: ${horario}\n\n✅ O horário foi liberado automaticamente.`;
     window.open(`https://wa.me/${WA_DANTIELLY}?text=${encodeURIComponent(msg)}`, '_blank');
 
     document.getElementById('sucesso-icon').textContent = '❌';
     document.getElementById('sucesso-titulo').textContent = 'Agendamento cancelado';
-    document.getElementById('sucesso-texto').textContent = `Seu agendamento de ${dataLabel} às ${horario} foi cancelado. A Dantielly foi notificada pelo WhatsApp.`;
+    document.getElementById('sucesso-texto').textContent = `Seu agendamento de ${dataLabel} às ${horario} foi cancelado e o horário foi liberado. A Dantielly foi notificada.`;
     mostrarTela('tela-sucesso');
   } catch(e) { alert('Erro ao cancelar. Tente novamente.'); }
 }
 
-function iniciarRemarcacao(date, id, horario, servico, dataLabel) {
-  remarcandoId = { date, id, horario, servico, dataLabel };
+function iniciarRemarcacao(date, id, horario, servico, dataLabel, nome) {
+  remarcandoId = { date, id, horario, servico, dataLabel, nome };
   novaData = null; novoSlot = null;
 
-  // Fechar outros
   document.querySelectorAll('[id^="remarcar-"]').forEach(el => el.style.display = 'none');
 
   const el = document.getElementById('remarcar-' + id);
@@ -405,29 +394,29 @@ async function confirmarRemarcacao() {
   const { date: oldDate, id, horario: oldHorario, servico, dataLabel: oldDataLabel, nome } = remarcandoId;
 
   try {
-    // Buscar dados do agendamento original
+    // Buscar dados originais
     const snap = await window._get(window._ref(window._db, `agendamentos/${oldDate}/${id}`));
     const dadosOriginais = snap.val();
 
-    // Criar novo agendamento
+    // DELETA agendamento antigo — horário antigo volta a ficar disponível!
+    await window._remove(window._ref(window._db, `agendamentos/${oldDate}/${id}`));
+
+    // Cria novo agendamento no novo horário
     const novoId = Date.now().toString();
     await window._update(window._ref(window._db, `agendamentos/${novaData}/${novoId}`), {
       ...dadosOriginais,
       horario: novoSlot,
       status: 'pendente',
-      remarcadoDe: `${oldDate} ${oldHorario}`
+      criadoEm: new Date().toISOString()
     });
 
-    // Cancelar agendamento antigo
-    await window._update(window._ref(window._db, `agendamentos/${oldDate}/${id}`), { status: 'cancelado' });
-
     // Notificar Dantielly
-    const msg = `📅 Dantielly! A cliente *${dadosOriginais.nome || '—'}* remarcou o agendamento:\n\n❌ Era: ${oldDataLabel} às ${oldHorario}\n✅ Novo: ${novaDataLabel} às ${novoSlot}\n📋 Serviço: ${servico}\n\nHorário antigo foi liberado automaticamente.`;
+    const msg = `📅 Dantielly! A cliente *${nome}* REMARCOU o agendamento:\n\n❌ Era: ${oldDataLabel} às ${oldHorario}\n✅ Novo: ${novaDataLabel} às ${novoSlot}\n📋 Serviço: ${servico}\n\n✅ Horário antigo foi liberado automaticamente.`;
     window.open(`https://wa.me/${WA_DANTIELLY}?text=${encodeURIComponent(msg)}`, '_blank');
 
     document.getElementById('sucesso-icon').textContent = '📅';
     document.getElementById('sucesso-titulo').textContent = 'Remarcado com sucesso!';
-    document.getElementById('sucesso-texto').textContent = `Seu agendamento foi remarcado para ${novaDataLabel} às ${novoSlot}. A Dantielly foi notificada pelo WhatsApp.`;
+    document.getElementById('sucesso-texto').textContent = `Seu agendamento foi remarcado para ${novaDataLabel} às ${novoSlot}. A Dantielly foi notificada.`;
     mostrarTela('tela-sucesso');
   } catch(e) { alert('Erro ao remarcar. Tente novamente.'); }
 }
