@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Agendamento — Dantielly Depilação</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --avo-xdark: #3a4f2a; --avo-dark: #4e6638; --avo: #6b8c50;
+    --avo-light: #b9cc9a; --avo-pale: #dceac4; --avo-cream: #f2f8e9;
+    --avo-blush: #f8fcf2; --honey: #c4892a; --honey-light: #e8b86d;
+    --white: #ffffff; --ink: #232e19; --muted: #7a9060;
+    --red: #c0392b; --red-light: #fdf0ef;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Outfit', sans-serif; background: var(--avo-blush); color: var(--ink); min-height: 100vh; }
+
+  nav { position: fixed; top: 0; width: 100%; z-index: 500; display: flex; align-items: center; justify-content: space-between; padding: 1rem 3rem; background: rgba(255,255,255,.95); backdrop-filter: blur(16px); border-bottom: 1px solid var(--avo-pale); }
+  .brand-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--avo-xdark); text-decoration: none; }
+  .nav-back { font-size: .8rem; color: var(--muted); text-decoration: none; font-weight: 500; transition: color .2s; }
+  .nav-back:hover { color: var(--avo-xdark); }
+
+  .page { max-width: 520px; margin: 0 auto; padding: 5.5rem 1.5rem 3rem; }
+
+  .page-eyebrow { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--honey); font-weight: 600; margin-bottom: .6rem; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 400; color: var(--avo-xdark); margin-bottom: .6rem; }
+  .page-title em { font-style: italic; color: var(--honey); }
+  .page-desc { font-size: .88rem; color: var(--muted); line-height: 1.7; margin-bottom: 2rem; }
+
+  .card { background: var(--white); border: 1px solid var(--avo-pale); border-radius: 1.4rem; padding: 1.6rem; margin-bottom: 1rem; }
+  .card-title { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--honey); font-weight: 600; margin-bottom: 1.2rem; }
+
+  .form-group { margin-bottom: 1rem; }
+  .form-label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: .4rem; font-weight: 500; }
+  input[type=tel] { width: 100%; padding: .75rem 1rem; border: 1.5px solid var(--avo-pale); border-radius: .8rem; font-family: 'Outfit', sans-serif; font-size: .88rem; color: var(--ink); background: var(--white); outline: none; transition: border-color .2s; }
+  input:focus { border-color: var(--avo); }
+
+  .btn-primary { width: 100%; padding: .95rem; background: var(--avo-xdark); color: var(--white); border: none; border-radius: 1rem; font-family: 'Outfit', sans-serif; font-size: .9rem; font-weight: 600; cursor: pointer; transition: all .25s; margin-top: .5rem; }
+  .btn-primary:hover { background: var(--avo-dark); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: .4; cursor: default; transform: none; }
+
+  .ag-card { background: var(--white); border: 1px solid var(--avo-pale); border-radius: 1.4rem; padding: 1.6rem; margin-bottom: 1rem; border-left: 4px solid var(--honey); }
+  .ag-card.cancelado { border-left-color: var(--red); opacity: .7; }
+  .ag-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+  .ag-data { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--avo-xdark); }
+  .ag-hora { font-size: .85rem; color: var(--muted); margin-top: .2rem; }
+  .status-tag { font-size: .72rem; padding: .3rem .8rem; border-radius: 1rem; font-weight: 500; }
+  .status-tag.pendente { background: #fef9e7; color: #a07825; }
+  .status-tag.confirmado { background: #eafaf1; color: #27ae60; }
+  .status-tag.cancelado { background: var(--red-light); color: var(--red); }
+  .ag-details { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 1.2rem; }
+  .ag-detail { display: flex; gap: .5rem; font-size: .85rem; color: var(--muted); }
+  .ag-detail strong { color: var(--ink); }
+  .ag-actions { display: flex; gap: .8rem; }
+  .btn-cancelar-ag { flex: 1; padding: .75rem; background: var(--red-light); color: var(--red); border: 1.5px solid var(--red); border-radius: .8rem; font-family: 'Outfit', sans-serif; font-size: .85rem; font-weight: 500; cursor: pointer; transition: all .2s; }
+  .btn-cancelar-ag:hover { background: var(--red); color: var(--white); }
+  .btn-remarcar { flex: 1; padding: .75rem; background: var(--avo-cream); color: var(--avo-dark); border: 1.5px solid var(--avo-light); border-radius: .8rem; font-family: 'Outfit', sans-serif; font-size: .85rem; font-weight: 500; cursor: pointer; transition: all .2s; }
+  .btn-remarcar:hover { background: var(--avo-pale); }
+
+  .empty-state { text-align: center; padding: 2.5rem; color: var(--muted); font-size: .88rem; }
+  .empty-icon { font-size: 2.5rem; margin-bottom: .8rem; }
+
+  /* REMARCAÇÃO */
+  .remarcar-wrap { background: var(--avo-cream); border: 1px solid var(--avo-pale); border-radius: 1.2rem; padding: 1.4rem; margin-top: 1rem; }
+  .remarcar-title { font-size: .82rem; font-weight: 600; color: var(--avo-xdark); margin-bottom: 1rem; }
+  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
+  .cal-nav-btn { width: 28px; height: 28px; border: 1px solid var(--avo-pale); border-radius: .5rem; background: var(--white); cursor: pointer; font-size: .9rem; color: var(--muted); }
+  .cal-month { font-size: .88rem; font-weight: 500; color: var(--avo-xdark); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: .8rem; }
+  .cal-label { text-align: center; font-size: .62rem; color: var(--muted); padding: 3px 0; }
+  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: .78rem; border-radius: .4rem; cursor: pointer; transition: all .15s; color: var(--ink); }
+  .cal-day:hover:not(.disabled):not(.empty) { background: var(--avo-pale); }
+  .cal-day.selected { background: var(--avo-xdark); color: var(--white); }
+  .cal-day.disabled { color: var(--avo-pale); cursor: default; }
+  .cal-day.empty { cursor: default; }
+  .slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-bottom: 1rem; }
+  .slot { padding: .5rem; border: 1.5px solid var(--avo-pale); border-radius: .6rem; text-align: center; font-size: .78rem; cursor: pointer; transition: all .2s; background: var(--white); color: var(--ink); }
+  .slot:hover:not(.taken) { border-color: var(--avo); }
+  .slot.selected { background: var(--avo-xdark); color: var(--white); border-color: var(--avo-xdark); }
+  .slot.taken { background: var(--avo-blush); color: var(--avo-light); cursor: default; text-decoration: line-through; font-size: .72rem; }
+  .btn-confirmar-remarcar { width: 100%; padding: .8rem; background: var(--avo-xdark); color: var(--white); border: none; border-radius: .8rem; font-family: 'Outfit', sans-serif; font-size: .88rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+  .btn-confirmar-remarcar:disabled { opacity: .4; cursor: default; }
+
+  .success-card { text-align: center; padding: 2rem; }
+  .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .success-card h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--avo-xdark); margin-bottom: .6rem; }
+  .success-card p { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+
+  .loading { text-align: center; padding: 2rem; color: var(--muted); font-size: .88rem; }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.2rem; }
+    .page { padding: 4.5rem 1rem 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand-name">Dantielly</a>
+  <a href="index.html" class="nav-back">← Voltar ao site</a>
+</nav>
+
+<div class="page">
+  <div class="page-eyebrow">Gerenciar agendamento</div>
+  <h1 class="page-title">Meu <em>agendamento</em></h1>
+  <p class="page-desc">Digite seu WhatsApp para ver, cancelar ou remarcar seu horário.</p>
+
+  <!-- BUSCA -->
+  <div id="tela-busca">
+    <div class="card">
+      <div class="card-title">Buscar meu agendamento</div>
+      <div class="form-group">
+        <label class="form-label">Seu WhatsApp</label>
+        <input type="tel" id="wa-busca" placeholder="(61) 9xxxx-xxxx" oninput="maskPhone(this)" />
+      </div>
+      <button class="btn-primary" onclick="buscarAgendamento()">Buscar agendamento</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="tela-loading" style="display:none">
+    <div class="card">
+      <div class="loading">⏳ Buscando seus agendamentos...</div>
+    </div>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div id="tela-resultados" style="display:none">
+    <div id="lista-agendamentos"></div>
+    <p style="text-align:center;margin-top:1rem">
+      <a href="#" onclick="voltarBusca();return false;" style="font-size:.82rem;color:var(--muted)">← Buscar outro número</a>
+    </p>
+  </div>
+
+  <!-- SUCESSO -->
+  <div id="tela-sucesso" style="display:none">
+    <div class="card">
+      <div class="success-card">
+        <div class="success-icon" id="sucesso-icon">✅</div>
+        <h2 id="sucesso-titulo">Pronto!</h2>
+        <p id="sucesso-texto">Sua solicitação foi enviada.</p>
+        <button class="btn-primary" style="margin-top:1.5rem" onclick="voltarBusca()">Voltar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDyE_BqLfVi7K3dZV6z08YMuKEaOsnGh_E",
+  authDomain: "dantielly-depilacao.firebaseapp.com",
+  databaseURL: "https://dantielly-depilacao-default-rtdb.firebaseio.com",
+  projectId: "dantielly-depilacao",
+  storageBucket: "dantielly-depilacao.firebasestorage.app",
+  messagingSenderId: "658252770067",
+  appId: "1:658252770067:web:af38d246162e91e3f948e6"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+window._db = db;
+window._ref = ref;
+window._get = get;
+window._update = update;
+window._remove = remove;
+window.firebaseReady = true;
+</script>
+
+<script>
+const WA_DANTIELLY = '5561991763429';
+const HORARIOS = ['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DIAS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+let agendamentosEncontrados = [];
+let remarcandoId = null;
+let calY = 2026, calM = 4;
+let novaData = null, novoSlot = null;
+
+function maskPhone(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  if (v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+  else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+  else if (v.length > 0) v = `(${v}`;
+  el.value = v;
+}
+
+function mostrarTela(id) {
+  ['tela-busca','tela-loading','tela-resultados','tela-sucesso'].forEach(t => {
+    document.getElementById(t).style.display = t === id ? 'block' : 'none';
+  });
+}
+
+function voltarBusca() {
+  mostrarTela('tela-busca');
+  document.getElementById('wa-busca').value = '';
+  agendamentosEncontrados = [];
+}
+
+async function buscarAgendamento() {
+  if (!window.firebaseReady) { setTimeout(buscarAgendamento, 300); return; }
+  const wa = document.getElementById('wa-busca').value.replace(/\D/g,'');
+  if (wa.length < 10) { alert('Digite seu WhatsApp completo'); return; }
+
+  mostrarTela('tela-loading');
+
+  try {
+    const snap = await window._get(window._ref(window._db, 'agendamentos'));
+    agendamentosEncontrados = [];
+
+    if (snap.exists()) {
+      const data = snap.val();
+      Object.entries(data).forEach(([date, ags]) => {
+        Object.entries(ags).forEach(([id, ag]) => {
+          if (ag.status === 'bloqueado') return;
+          const agWa = (ag.whatsapp || '').replace(/\D/g,'');
+          if (agWa === wa || agWa.endsWith(wa) || wa.endsWith(agWa)) {
+            agendamentosEncontrados.push({ date, id, ...ag });
+          }
+        });
+      });
+    }
+
+    agendamentosEncontrados.sort((a, b) => a.date.localeCompare(b.date));
+    renderResultados();
+    mostrarTela('tela-resultados');
+  } catch(e) {
+    mostrarTela('tela-busca');
+    alert('Erro ao buscar. Tente novamente.');
+  }
+}
+
+function renderResultados() {
+  const lista = document.getElementById('lista-agendamentos');
+  if (!agendamentosEncontrados.length) {
+    lista.innerHTML = `
+      <div class="card">
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          Nenhum agendamento encontrado para esse WhatsApp.<br><br>
+          <a href="agendar.html" style="color:var(--avo-dark);font-weight:500">Fazer um agendamento →</a>
+        </div>
+      </div>`;
+    return;
+  }
+
+  lista.innerHTML = agendamentosEncontrados.map(ag => {
+    const [y,m,d] = ag.date.split('-');
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    const dataAg = new Date(ag.date + 'T12:00:00');
+    const passado = dataAg < hoje;
+    const isCancelado = ag.status === 'cancelado';
+    const podeAlterar = !passado && !isCancelado;
+
+    return `
+      <div class="ag-card ${isCancelado ? 'cancelado' : ''}">
+        <div class="ag-header">
+          <div>
+            <div class="ag-data">${d}/${m}/${y}</div>
+            <div class="ag-hora">🕐 ${ag.horario}</div>
+          </div>
+          <span class="status-tag ${ag.status}">${ag.status}</span>
+        </div>
+        <div class="ag-details">
+          <div class="ag-detail">📋 <strong>${ag.servico || '—'}</strong></div>
+          <div class="ag-detail">👤 <strong>${ag.nome || '—'}</strong></div>
+        </div>
+        ${podeAlterar ? `
+          <div class="ag-actions">
+            <button class="btn-cancelar-ag" onclick="cancelarAgendamento('${ag.date}','${ag.id}','${ag.horario}','${ag.servico}','${d}/${m}/${y}','${ag.nome}')">✗ Cancelar</button>
+            <button class="btn-remarcar" onclick="iniciarRemarcacao('${ag.date}','${ag.id}','${ag.horario}','${ag.servico}','${d}/${m}/${y}')">📅 Remarcar</button>
+          </div>
+          <div id="remarcar-${ag.id}" style="display:none"></div>
+        ` : `<p style="font-size:.78rem;color:var(--muted);margin-top:.5rem">${passado ? '⏰ Agendamento passado' : '❌ Agendamento cancelado'}</p>`}
+      </div>`;
+  }).join('');
+}
+
+async function cancelarAgendamento(date, id, horario, servico, dataLabel, nome) {
+  if (!confirm(`Cancelar agendamento de ${dataLabel} às ${horario}?`)) return;
+
+  try {
+    await window._update(window._ref(window._db, `agendamentos/${date}/${id}`), { status: 'cancelado' });
+
+    // Notificar Dantielly no WhatsApp
+    const msg = `⚠️ Dantielly! A cliente *${nome}* cancelou o agendamento:\n\n📋 Serviço: ${servico}\n📅 Data: ${dataLabel}\n🕐 Horário: ${horario}\n\nO horário foi liberado automaticamente.`;
+    window.open(`https://wa.me/${WA_DANTIELLY}?text=${encodeURIComponent(msg)}`, '_blank');
+
+    document.getElementById('sucesso-icon').textContent = '❌';
+    document.getElementById('sucesso-titulo').textContent = 'Agendamento cancelado';
+    document.getElementById('sucesso-texto').textContent = `Seu agendamento de ${dataLabel} às ${horario} foi cancelado. A Dantielly foi notificada pelo WhatsApp.`;
+    mostrarTela('tela-sucesso');
+  } catch(e) { alert('Erro ao cancelar. Tente novamente.'); }
+}
+
+function iniciarRemarcacao(date, id, horario, servico, dataLabel) {
+  remarcandoId = { date, id, horario, servico, dataLabel };
+  novaData = null; novoSlot = null;
+
+  // Fechar outros
+  document.querySelectorAll('[id^="remarcar-"]').forEach(el => el.style.display = 'none');
+
+  const el = document.getElementById('remarcar-' + id);
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div class="remarcar-wrap">
+      <div class="remarcar-title">📅 Escolha nova data e horário</div>
+      <div class="cal-header">
+        <button class="cal-nav-btn" onclick="changeMonthR(-1)">‹</button>
+        <span class="cal-month" id="r-cal-label"></span>
+        <button class="cal-nav-btn" onclick="changeMonthR(1)">›</button>
+      </div>
+      <div class="cal-grid" id="r-cal-grid"></div>
+      <div id="r-slots-wrap" style="display:none">
+        <div class="slots-grid" id="r-slots-grid"></div>
+      </div>
+      <button class="btn-confirmar-remarcar" id="btn-confirmar-remarcar" onclick="confirmarRemarcacao()" disabled>
+        Confirmar nova data
+      </button>
+    </div>`;
+
+  renderCalR();
+}
+
+function renderCalR() {
+  const label = document.getElementById('r-cal-label');
+  const grid = document.getElementById('r-cal-grid');
+  if (!label || !grid) return;
+
+  label.textContent = MESES[calM] + ' ' + calY;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const first = new Date(calY, calM, 1).getDay();
+  const total = new Date(calY, calM+1, 0).getDate();
+
+  let html = DIAS.map(d => `<div class="cal-label">${d}</div>`).join('');
+  for (let i = 0; i < first; i++) html += `<div class="cal-day empty"></div>`;
+  for (let d = 1; d <= total; d++) {
+    const date = new Date(calY, calM, d);
+    const past = date < today || date.getDay() === 0;
+    const key = `${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const sel = novaData === key;
+    const isToday = date.getTime() === today.getTime();
+    let cls = past ? 'disabled' : sel ? 'selected' : isToday ? 'today' : '';
+    const click = !past ? `onclick="selDataR('${key}')"` : '';
+    html += `<div class="cal-day ${cls}" ${click}>${d}</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+async function selDataR(key) {
+  novaData = key; novoSlot = null;
+  renderCalR();
+
+  const slotsWrap = document.getElementById('r-slots-wrap');
+  const slotsGrid = document.getElementById('r-slots-grid');
+  slotsWrap.style.display = 'block';
+  slotsGrid.innerHTML = '<div style="font-size:.78rem;color:var(--muted);padding:.5rem">Verificando horários...</div>';
+
+  try {
+    const snap = await window._get(window._ref(window._db, `agendamentos/${key}`));
+    let ocupados = [];
+    if (snap.exists()) ocupados = Object.values(snap.val()).map(a => a.horario);
+
+    slotsGrid.innerHTML = HORARIOS.map(h => {
+      const taken = ocupados.includes(h);
+      return `<div class="slot ${taken?'taken':''}" ${!taken?`onclick="selSlotR('${h}')"`:''}>${taken ? h+'✗' : h}</div>`;
+    }).join('');
+  } catch(e) {
+    slotsGrid.innerHTML = HORARIOS.map(h => `<div class="slot" onclick="selSlotR('${h}')">${h}</div>`).join('');
+  }
+
+  document.getElementById('btn-confirmar-remarcar').disabled = true;
+}
+
+function selSlotR(h) {
+  novoSlot = h;
+  document.querySelectorAll('.slot').forEach(s => {
+    s.classList.remove('selected');
+    if (s.textContent === h) s.classList.add('selected');
+  });
+  document.getElementById('btn-confirmar-remarcar').disabled = false;
+}
+
+function changeMonthR(dir) {
+  calM += dir;
+  if (calM < 0) { calM = 11; calY--; }
+  if (calM > 11) { calM = 0; calY++; }
+  novaData = null; novoSlot = null;
+  document.getElementById('r-slots-wrap').style.display = 'none';
+  document.getElementById('btn-confirmar-remarcar').disabled = true;
+  renderCalR();
+}
+
+async function confirmarRemarcacao() {
+  if (!novaData || !novoSlot || !remarcandoId) return;
+
+  const [y,m,d] = novaData.split('-');
+  const novaDataLabel = `${d}/${m}/${y}`;
+  const { date: oldDate, id, horario: oldHorario, servico, dataLabel: oldDataLabel, nome } = remarcandoId;
+
+  try {
+    // Buscar dados do agendamento original
+    const snap = await window._get(window._ref(window._db, `agendamentos/${oldDate}/${id}`));
+    const dadosOriginais = snap.val();
+
+    // Criar novo agendamento
+    const novoId = Date.now().toString();
+    await window._update(window._ref(window._db, `agendamentos/${novaData}/${novoId}`), {
+      ...dadosOriginais,
+      horario: novoSlot,
+      status: 'pendente',
+      remarcadoDe: `${oldDate} ${oldHorario}`
+    });
+
+    // Cancelar agendamento antigo
+    await window._update(window._ref(window._db, `agendamentos/${oldDate}/${id}`), { status: 'cancelado' });
+
+    // Notificar Dantielly
+    const msg = `📅 Dantielly! A cliente *${dadosOriginais.nome || '—'}* remarcou o agendamento:\n\n❌ Era: ${oldDataLabel} às ${oldHorario}\n✅ Novo: ${novaDataLabel} às ${novoSlot}\n📋 Serviço: ${servico}\n\nHorário antigo foi liberado automaticamente.`;
+    window.open(`https://wa.me/${WA_DANTIELLY}?text=${encodeURIComponent(msg)}`, '_blank');
+
+    document.getElementById('sucesso-icon').textContent = '📅';
+    document.getElementById('sucesso-titulo').textContent = 'Remarcado com sucesso!';
+    document.getElementById('sucesso-texto').textContent = `Seu agendamento foi remarcado para ${novaDataLabel} às ${novoSlot}. A Dantielly foi notificada pelo WhatsApp.`;
+    mostrarTela('tela-sucesso');
+  } catch(e) { alert('Erro ao remarcar. Tente novamente.'); }
+}
+</script>
+</body>
+</html>
