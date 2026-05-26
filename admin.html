@@ -176,8 +176,10 @@
     </div>
 
     <div id="tab-bloqueios" style="display:none">
+
+      <!-- BLOQUEIO SIMPLES -->
       <div class="bloquear-card">
-        <h3>Bloquear horário manualmente</h3>
+        <h3>🔒 Bloquear horário único</h3>
         <div class="bloquear-row">
           <div class="bloquear-field">
             <label>Data</label>
@@ -186,7 +188,7 @@
           <div class="bloquear-field">
             <label>Horário</label>
             <select id="blq-hora">
-              <option value="">Selecione</option>
+              <option value="">Todos os horários</option>
               <option>09:00</option><option>09:30</option><option>10:00</option>
               <option>10:30</option><option>11:00</option><option>11:30</option>
               <option>13:00</option><option>13:30</option><option>14:00</option>
@@ -197,12 +199,73 @@
           </div>
           <div class="bloquear-field">
             <label>Motivo</label>
-            <input type="text" id="blq-motivo" placeholder="Ex: Horário pessoal" style="width:200px" />
+            <input type="text" id="blq-motivo" placeholder="Ex: Horário pessoal" style="width:180px" />
           </div>
           <button class="btn-bloquear" onclick="bloquearHorario()">Bloquear</button>
         </div>
+      </div>
+
+      <!-- BLOQUEIO EM MASSA -->
+      <div class="bloquear-card">
+        <h3>📅 Bloquear período em massa</h3>
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1rem">Bloqueia todos os horários de um período inteiro — férias, folgas, viagens.</p>
+        <div class="bloquear-row">
+          <div class="bloquear-field">
+            <label>Data início</label>
+            <input type="date" id="blq-inicio" />
+          </div>
+          <div class="bloquear-field">
+            <label>Data fim</label>
+            <input type="date" id="blq-fim" />
+          </div>
+          <div class="bloquear-field">
+            <label>Motivo</label>
+            <input type="text" id="blq-motivo-massa" placeholder="Ex: Férias de janeiro" style="width:180px" />
+          </div>
+          <button class="btn-bloquear" onclick="bloquearPeriodo()">Bloquear período</button>
+        </div>
+        <div style="margin-top:.8rem;display:flex;gap:.5rem;flex-wrap:wrap">
+          <button class="btn-refresh" onclick="bloquearMes(0)">Janeiro</button>
+          <button class="btn-refresh" onclick="bloquearMes(1)">Fevereiro</button>
+          <button class="btn-refresh" onclick="bloquearMes(2)">Março</button>
+          <button class="btn-refresh" onclick="bloquearMes(3)">Abril</button>
+          <button class="btn-refresh" onclick="bloquearMes(4)">Maio</button>
+          <button class="btn-refresh" onclick="bloquearMes(5)">Junho</button>
+          <button class="btn-refresh" onclick="bloquearMes(6)">Julho</button>
+          <button class="btn-refresh" onclick="bloquearMes(7)">Agosto</button>
+          <button class="btn-refresh" onclick="bloquearMes(8)">Setembro</button>
+          <button class="btn-refresh" onclick="bloquearMes(9)">Outubro</button>
+          <button class="btn-refresh" onclick="bloquearMes(10)">Novembro</button>
+          <button class="btn-refresh" onclick="bloquearMes(11)">Dezembro</button>
+        </div>
+        <div style="margin-top:.6rem">
+          <button class="btn-bloquear" style="background:var(--red)" onclick="bloquearAnoTodo()">🔒 Bloquear ano todo (2026)</button>
+        </div>
+      </div>
+
+      <!-- DESBLOQUEAR EM MASSA -->
+      <div class="bloquear-card">
+        <h3>🔓 Desbloquear período</h3>
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1rem">Remove todos os bloqueios de um período.</p>
+        <div class="bloquear-row">
+          <div class="bloquear-field">
+            <label>Data início</label>
+            <input type="date" id="desblq-inicio" />
+          </div>
+          <div class="bloquear-field">
+            <label>Data fim</label>
+            <input type="date" id="desblq-fim" />
+          </div>
+          <button class="btn-bloquear" style="background:var(--avo)" onclick="desbloquearPeriodo()">🔓 Desbloquear período</button>
+        </div>
+      </div>
+
+      <!-- LISTA DE BLOQUEIOS -->
+      <div class="bloquear-card">
+        <h3>Lista de bloqueios ativos</h3>
         <div class="bloqueios-list" id="bloqueios-list"></div>
       </div>
+
     </div>
   </div>
 </div>
@@ -413,18 +476,107 @@ async function bloquearHorario() {
   const data = document.getElementById('blq-data').value;
   const hora = document.getElementById('blq-hora').value;
   const motivo = document.getElementById('blq-motivo').value || 'Bloqueado pela administração';
-  if (!data || !hora) { toast('Preencha data e horário', 'err'); return; }
-  const id = 'blq_' + Date.now();
+  if (!data) { toast('Preencha a data', 'err'); return; }
+
   try {
-    await window._set(window._ref(window._db, `agendamentos/${data}/${id}`), {
-      horario: hora, status: 'bloqueado', motivo, criadoEm: new Date().toISOString()
-    });
-    toast('🔒 Horário bloqueado!');
+    const horarios = hora ? [hora] : ['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+    for (const h of horarios) {
+      const id = 'blq_' + Date.now() + '_' + h.replace(':','');
+      await window._set(window._ref(window._db, `agendamentos/${data}/${id}`), {
+        horario: h, status: 'bloqueado', motivo, criadoEm: new Date().toISOString()
+      });
+    }
+    toast(`🔒 ${horarios.length === 1 ? 'Horário bloqueado' : 'Dia bloqueado'}!`);
     document.getElementById('blq-data').value = '';
     document.getElementById('blq-hora').value = '';
     document.getElementById('blq-motivo').value = '';
     carregarBloqueios();
   } catch(e) { toast('Erro ao bloquear', 'err'); }
+}
+
+async function bloquearPeriodo() {
+  const inicio = document.getElementById('blq-inicio').value;
+  const fim = document.getElementById('blq-fim').value;
+  const motivo = document.getElementById('blq-motivo-massa').value || 'Período bloqueado';
+  if (!inicio || !fim) { toast('Preencha data início e fim', 'err'); return; }
+  if (inicio > fim) { toast('Data início deve ser antes do fim', 'err'); return; }
+
+  const horarios = ['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+  const start = new Date(inicio + 'T12:00:00');
+  const end = new Date(fim + 'T12:00:00');
+  let count = 0;
+
+  try {
+    let current = new Date(start);
+    while (current <= end) {
+      if (current.getDay() !== 0) { // Pula domingo
+        const dateStr = current.toISOString().split('T')[0];
+        for (const h of horarios) {
+          const id = 'blq_' + Date.now() + '_' + dateStr + '_' + h.replace(':','');
+          await window._set(window._ref(window._db, `agendamentos/${dateStr}/${id}`), {
+            horario: h, status: 'bloqueado', motivo, criadoEm: new Date().toISOString()
+          });
+          count++;
+        }
+      }
+      current.setDate(current.getDate() + 1);
+    }
+    toast(`🔒 ${count} horários bloqueados!`);
+    document.getElementById('blq-inicio').value = '';
+    document.getElementById('blq-fim').value = '';
+    document.getElementById('blq-motivo-massa').value = '';
+    carregarBloqueios();
+  } catch(e) { toast('Erro ao bloquear período', 'err'); }
+}
+
+async function bloquearMes(mes) {
+  const ano = new Date().getFullYear();
+  const inicio = `${ano}-${String(mes+1).padStart(2,'0')}-01`;
+  const ultimoDia = new Date(ano, mes+1, 0).getDate();
+  const fim = `${ano}-${String(mes+1).padStart(2,'0')}-${ultimoDia}`;
+  document.getElementById('blq-inicio').value = inicio;
+  document.getElementById('blq-fim').value = fim;
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  document.getElementById('blq-motivo-massa').value = `${meses[mes]} bloqueado`;
+  if (confirm(`Bloquear todo o mês de ${meses[mes]}?`)) {
+    await bloquearPeriodo();
+  }
+}
+
+async function bloquearAnoTodo() {
+  if (!confirm('Bloquear o ano todo de 2026? Isso bloqueará todos os horários disponíveis!')) return;
+  document.getElementById('blq-inicio').value = '2026-01-01';
+  document.getElementById('blq-fim').value = '2026-12-31';
+  document.getElementById('blq-motivo-massa').value = 'Agenda bloqueada 2026';
+  await bloquearPeriodo();
+}
+
+async function desbloquearPeriodo() {
+  const inicio = document.getElementById('desblq-inicio').value;
+  const fim = document.getElementById('desblq-fim').value;
+  if (!inicio || !fim) { toast('Preencha data início e fim', 'err'); return; }
+  if (!confirm(`Desbloquear todos os horários de ${formatarData(inicio)} até ${formatarData(fim)}?`)) return;
+
+  try {
+    const snap = await window._get(window._ref(window._db, 'agendamentos'));
+    if (!snap.exists()) { toast('Nenhum bloqueio encontrado'); return; }
+    const data = snap.val();
+    let count = 0;
+    for (const [date, ags] of Object.entries(data)) {
+      if (date >= inicio && date <= fim) {
+        for (const [id, ag] of Object.entries(ags)) {
+          if (ag.status === 'bloqueado') {
+            await window._remove(window._ref(window._db, `agendamentos/${date}/${id}`));
+            count++;
+          }
+        }
+      }
+    }
+    toast(`🔓 ${count} bloqueios removidos!`);
+    document.getElementById('desblq-inicio').value = '';
+    document.getElementById('desblq-fim').value = '';
+    carregarBloqueios();
+  } catch(e) { toast('Erro ao desbloquear', 'err'); }
 }
 
 async function carregarBloqueios() {
