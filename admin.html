@@ -396,8 +396,14 @@ function renderCard(ag, isHoje) {
 
 async function atualizarStatus(date, id, status) {
   try {
-    await window._update(window._ref(window._db, `agendamentos/${date}/${id}`), { status });
-    toast(status === 'confirmado' ? '✓ Confirmado!' : status === 'cancelado' ? '✗ Cancelado!' : '↩ Reativado!', status === 'confirmado' ? 'ok' : 'err');
+    if (status === 'cancelado') {
+      // DELETA o agendamento — horário volta a ficar disponível!
+      await window._remove(window._ref(window._db, `agendamentos/${date}/${id}`));
+      toast('✗ Cancelado! Horário liberado.', 'err');
+    } else {
+      await window._update(window._ref(window._db, `agendamentos/${date}/${id}`), { status });
+      toast(status === 'confirmado' ? '✓ Confirmado!' : '↩ Reativado!', 'ok');
+    }
     carregarAgendamentos();
     carregarStats();
   } catch(e) { toast('Erro ao atualizar', 'err'); }
