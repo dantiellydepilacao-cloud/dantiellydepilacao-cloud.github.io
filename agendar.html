@@ -386,11 +386,22 @@ async function selDate(key) {
 }
 
 function renderSlots(ocupados) {
+  const agora = new Date();
+  const hoje = agora.toISOString().split('T')[0];
+  const horaAgora = agora.getHours() * 60 + agora.getMinutes();
+  const isHoje = state.date === hoje;
+
   const html = HORARIOS.map(h => {
     const taken = ocupados.includes(h);
+    const [hh, mm] = h.split(':').map(Number);
+    const horarioMin = hh * 60 + mm;
+    const passado = isHoje && horarioMin <= horaAgora;
+    const indisponivel = taken || passado;
     const sel = state.slot === h;
-    return `<div class="slot ${taken?'taken':''} ${sel?'selected':''}" ${!taken?`onclick="selSlot('${h}')"`:''}>${taken ? h + ' ✗' : h}</div>`;
+    if (passado) return ''; // Some completamente os horários passados
+    return `<div class="slot ${taken?'taken':''} ${sel?'selected':''}" ${!indisponivel?`onclick="selSlot('${h}')"`:''}>${taken ? h + ' ✗' : h}</div>`;
   }).join('');
+
   document.getElementById('slots-container').innerHTML = `<div class="slots-grid">${html}</div>`;
 }
 
