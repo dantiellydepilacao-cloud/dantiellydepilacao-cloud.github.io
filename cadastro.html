@@ -401,13 +401,15 @@ async function cadastrar() {
       ativo: true
     });
 
-    // Sucesso
+    // Sucesso — redireciona automaticamente
+    btn.textContent = '✅ Conta criada! Entrando no painel...';
+    setTimeout(() => { window.location.href = 'painel.html'; }, 1500);
     document.getElementById('form-card').innerHTML = `
       <div class="form-success">
         <span class="success-icon">🎉</span>
         <h2>Bem-vinda, ${nomeStudio}!</h2>
-        <p>Sua conta foi criada com sucesso.<br>Seus <strong>7 dias grátis</strong> já começaram. Acesse o painel e configure seu estúdio.</p>
-        <a href="admin.html" class="btn-painel">Acessar meu painel →</a>
+        <p>Sua conta foi criada com sucesso.<br>Redirecionando para o seu painel em instantes...</p>
+        <a href="painel.html" class="btn-painel">Acessar meu painel →</a>
       </div>
     `;
   } catch(e) {
